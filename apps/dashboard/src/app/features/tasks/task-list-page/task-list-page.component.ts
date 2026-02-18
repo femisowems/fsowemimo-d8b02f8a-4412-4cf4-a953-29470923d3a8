@@ -25,19 +25,6 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
       <!-- Header Section -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
         <div class="flex items-center gap-3">
-          <!-- Hamburger Menu -->
-          <button 
-            (click)="uiState.toggleSidebar()"
-            class="lg:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
-            <lucide-icon name="menu" [size]="24"></lucide-icon>
-          </button>
-
-          <button 
-            (click)="themeService.toggleTheme()"
-            class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
-            <lucide-icon [name]="themeService.theme() === 'dark' ? 'sun' : 'moon'" [size]="24"></lucide-icon>
-          </button>
-          
           <div>
             <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Project Board</h1>
             <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm mt-0.5 lg:mt-1">Manage, track and organize your team tasks.</p>
