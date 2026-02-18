@@ -1,96 +1,185 @@
-# FsowemimoD8b02f8a44124cf4A95329470923d3a8
+# Secure Task Management App
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+A modern, secure, and scalable task management application built with an Nx monorepo. This project features a robust Angular frontend styled with Tailwind CSS v4 and a NestJS backend API using TypeORM and SQLite/Postgres.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 🎥 Demo Video
 
-## Run tasks
+> [!NOTE]
+> Covers: RBAC flow, JWT auth lifecycle, Org scoping, Guard + decorator architecture, Trade-offs and future roadmap.
 
-To run tasks with Nx use:
+*(Add video link here)*
 
-```sh
-npx nx <target> <project-name>
+## 📜 Assessment Alignment
+
+This implementation satisfies all core requirements:
+- **JWT Authentication:** Real implementation with Supabase/Passport (no mocks).
+- **Hierarchical RBAC:** Role-based access control with guards and decorators.
+- **Org-scoped Access Control:** Data isolation at the query level.
+- **Modular Architecture:** Structured as an Nx monorepo.
+- **Audit Logging:** Tracks critical user actions.
+- **Responsive UI:** Built with Angular 19 and Tailwind CSS v4.
+- **Testing Strategy:** Unit and E2E testing ready.
+- **Documentation:** Comprehensive trade-offs and future work analysis.
+
+## 🚀 Key Features
+
+### Core Functionality
+- **Authenticated Dashboard:** Secure user access via Supabase Auth.
+- **Task Management:** Create, read, update, and delete tasks with ease.
+- **Organization Support:** Manage tasks within different organization contexts.
+- **Role-Based Access Control (RBAC):** Granular permission management.
+
+### 📈 Bonus Features Implemented
+- **Dark Mode Toggle:** Fully supported theme switching.
+- **Keyboard Shortcuts:** Productivity-focused shortcuts (Press `?` to view).
+- **Task Analytics:** Visual completion bar chart.
+- **Audit Log:** Comprehensive tracking of user actions.
+
+![Secure Task Management Dashboard](docs/images/dashboard-preview.png)
+
+## 📊 Trade-offs & Design Decisions
+
+### Chosen
+- **Decorator-based RBAC:** Prioritized clarity and developer experience for defining permissions.
+- **Shared DTOs:** Ensures type safety across Frontend and Backend.
+- **Org Scoping at Query Layer:** Implemented for performance and data isolation.
+- **Supabase for Auth:** leveraged for secure JWT issuance and user management without reinventing the wheel.
+
+### Not Implemented (Time-boxed)
+- **Refresh Tokens:** Standard short-lived access tokens used.
+- **RBAC Caching Layer:** Permissions are checked on every request for simplicity.
+- **Field-level Permissions:** Focus remained on resource-level access.
+
+## 🔮 Future Improvements
+
+### Security
+- **Refresh Token Rotation:** Enhance session security.
+- **CSRF Protection:** Additional layer for web security.
+- **RBAC Caching (Redis):** Improve performance for complex permission checks.
+- **Rate Limiting:** Protect API endpoints.
+
+### Scalability
+- **Postgres Row-Level Security:** Move authorization closer to the data.
+- **Event-based Audit Logging:** Decouple logging from business logic.
+- **Microservice Extraction:** Isolate the Auth module if scaling horizontally.
+
+### Product
+- **Advanced Role Delegation:**Allow users to assign roles.
+- **Task Comments & Attachments:** Collaboration features.
+- **Real-time Updates (WebSockets):** Live task board updates.
+
+## 🧑💻 Developer Experience
+
+- **ESLint + Prettier:** Consistent code style.
+- **Nx Affected Builds:** Efficient CI/CD pipeline.
+- **Shared Types:** Type safety across the stack.
+- **Environment-based Config:** Seamless switching between Dev and Prod.
+
+## 🛠️ Technology Stack
+
+**❤️ Built With:** Angular 19 • NestJS • Nx • Tailwind v4 • TypeORM • Supabase
+
+### Frontend (Dashboard)
+- **Framework:** Angular 19+
+- **Styling:** Tailwind CSS v4 (PostCSS)
+- **State Management:** Angular Signals / Services
+- **Icons:** Lucide Angular
+
+### Backend (API)
+- **Framework:** NestJS
+- **Database:** SQLite (Dev) / PostgreSQL (Prod)
+- **ORM:** TypeORM
+- **Authentication:** Passport-JWT & Supabase
+
+## 📦 Project Structure
+
+```
+├── apps/
+│   ├── dashboard/          # Angular Frontend Application
+│   │   ├── src/app/        # App source (Pages, Components, Services)
+│   │   ├── project.json    # Build configuration
+│   │   └── vercel.json     # Vercel deployment config (SPA rewrites)
+│   └── api/                # NestJS Backend Application
+│       ├── src/app/        # API Modules (Auth, Tasks, Users)
+│       └── assets/         # Static assets
+├── libs/                   # Shared Libraries
+│   ├── api/                # Shared backend logic
+│   ├── dashboard/          # Shared frontend UI/logic
+│   └── data/               # Shared entities and interfaces
+└── tools/                  # Nx workspace tools
 ```
 
-For example:
+## 🏁 Getting Started
 
-```sh
-npx nx build myproject
+### Prerequisites
+- Node.js (v20+)
+- npm (v10+)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup:**
+    Create a `.env` file in the root directory:
+    ```env
+    # Supabase Configuration (Required)
+    VITE_SUPABASE_URL=your_supabase_url
+    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    SUPABASE_URL=your_supabase_url
+    SUPABASE_ANON_KEY=your_supabase_anon_key
+
+    # API Configuration
+    VITE_API_URL=http://localhost:3001/api  # For local development
+    # VITE_API_URL=https://your-production-api.com/api # For production
+    ```
+
+### Running Locally
+
+You can run both the dashboard and API in parallel.
+
+**Start both (recommended):**
+Open two terminal tabs.
+
+Tab 1 - API:
+```bash
+npm run start:api
+# Runs on http://localhost:3001
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
+Tab 2 - Dashboard:
+```bash
+npm run start:dashboard
+# Runs on http://localhost:4200
 ```
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
-
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
+*Note: For styles debugging or development, run the Tailwind watcher in a separate terminal:*
+```bash
+npm run build:tailwind -- --watch
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🐛 Troubleshooting
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Styles Missing?
+- Run the Tailwind watcher: `npm run build:tailwind -- --watch`
+- Restart the dashboard server.
 
-## Set up CI!
+### SQLite "Foreign Key Constraint" Error?
+- Delete `database.sqlite` in the root and restart the API (`npm run start:api`).
 
-### Step 1
+### CORS Error on Vercel?
+- Ensure `environment.prod.ts` uses the production API URL (not localhost).
+- This is handled by `fileReplacements` in `project.json`.
 
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
+Built with ❤️ using Nx.
