@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+@import '../../../libs/dashboard/design-system/src/lib/theme.css';
+@source "./app/**/*.{html,ts}";
+@source "../../../libs/dashboard/design-system/src/lib";
+
+@layer base {
+
+  /* Resolve warning: vertical-align ignored on display: block elements from Tailwind preflight */
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    vertical-align: initial;
+  }
+}
+
+@layer utilities {
+
+  /* Add standard line-clamp property for compatibility */
+  .line-clamp-1 {
+    line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    line-clamp: 3;
+  }
+
+  .line-clamp-4 {
+    line-clamp: 4;
+  }
+
+  .line-clamp-5 {
+    line-clamp: 5;
+  }
+
+  .line-clamp-6 {
+    line-clamp: 6;
+  }
+}
+
+.test-scan-manual {
+  @apply bg-red-500 rounded-full;
+}
+
+/* You can add global styles to this file, and also import other style files */

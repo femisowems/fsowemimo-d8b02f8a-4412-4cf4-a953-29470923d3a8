@@ -1,0 +1,61 @@
+@theme {
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    /* Typography Scale */
+    --text-display: 3rem;
+    --text-display--line-height: 3.5rem;
+    --text-display--font-weight: 700;
+
+    --text-h1: 2.25rem;
+    --text-h1--line-height: 2.75rem;
+    --text-h1--font-weight: 700;
+
+    --text-h2: 1.875rem;
+    --text-h2--line-height: 2.25rem;
+    --text-h2--font-weight: 600;
+
+    --text-h3: 1.5rem;
+    --text-h3--line-height: 2rem;
+    --text-h3--font-weight: 600;
+
+    --text-h4: 1.25rem;
+    --text-h4--line-height: 1.75rem;
+    --text-h4--font-weight: 600;
+
+    --text-body-lg: 1.125rem;
+    --text-body-lg--line-height: 1.75rem;
+    --text-body-lg--font-weight: 400;
+
+    --text-body: 1rem;
+    --text-body--line-height: 1.5rem;
+    --text-body--font-weight: 400;
+
+    --text-body-sm: 0.875rem;
+    --text-body-sm--line-height: 1.25rem;
+    --text-body-sm--font-weight: 400;
+
+    --text-caption: 0.75rem;
+    --text-caption--line-height: 1rem;
+    --text-caption--font-weight: 500;
+
+    /* Spacing Grid (4pt) */
+    --spacing-grid-xs: 0.25rem;
+    --spacing-grid-sm: 0.5rem;
+    --spacing-grid-md: 1rem;
+    --spacing-grid-lg: 1.5rem;
+    --spacing-grid-xl: 2rem;
+    --spacing-grid-2xl: 3rem;
+    --spacing-grid-3xl: 4rem;
+
+    /* Radius */
+    --radius-card: 1.25rem;
+    --radius-modal: 1.5rem;
+    --radius-pill: 9999px;
+
+    /* Semantic Colors */
+    --color-surface: #ffffff;
+    --color-surface-glass: rgba(255, 255, 255, 0.7);
+    --color-text-primary: #111827;
+    --color-text-secondary: #4b5563;
+    --color-border-subtle: rgba(229, 231, 235, 1);
+}
