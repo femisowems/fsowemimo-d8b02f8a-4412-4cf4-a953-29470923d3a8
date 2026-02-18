@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthStore } from '../../core/services/auth.store';
 import { UiStateService } from '../../core/services/ui-state.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { UserRole } from '../../core/models';
 import { LucideAngularModule } from 'lucide-angular';
 
@@ -54,7 +55,15 @@ import { LucideAngularModule } from 'lucide-angular';
         </a>
       </nav>
 
-      <div class="p-grid-md border-t border-border-subtle">
+      <div class="p-grid-md border-t border-border-subtle space-y-1">
+        <button
+          (click)="themeService.toggleTheme()"
+          class="w-full flex items-center gap-grid-sm px-grid-md py-grid-sm text-text-secondary hover:bg-gray-50 hover:text-text-primary rounded-md transition-colors text-body-sm font-medium"
+        >
+          <lucide-icon [name]="themeService.theme() === 'dark' ? 'sun' : 'moon'" [size]="18"></lucide-icon>
+          {{ themeService.theme() === 'dark' ? 'Light Mode' : 'Dark Mode' }}
+        </button>
+
         <button
           (click)="logout()"
           class="w-full flex items-center gap-grid-sm px-grid-md py-grid-sm text-red-600 hover:bg-red-50 rounded-md transition-colors text-body-sm font-medium"
@@ -72,6 +81,7 @@ import { LucideAngularModule } from 'lucide-angular';
 export class SidebarComponent {
   private authStore = inject(AuthStore);
   public uiState = inject(UiStateService);
+  public themeService = inject(ThemeService);
 
   user = this.authStore.user;
   role = computed(() => this.user()?.role || '');

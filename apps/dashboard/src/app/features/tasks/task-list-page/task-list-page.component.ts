@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { LucideAngularModule } from 'lucide-angular';
 import { TaskService } from '../../../core/services/task.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { AuthStore } from '../../../core/services/auth.store';
 import { UiStateService } from '../../../core/services/ui-state.service';
 import { UserRole, Task, TaskStatus, TaskCategory, TaskPriority } from '../../../core/models';
@@ -30,10 +31,16 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
             class="lg:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
             <lucide-icon name="menu" [size]="24"></lucide-icon>
           </button>
+
+          <button 
+            (click)="themeService.toggleTheme()"
+            class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+            <lucide-icon [name]="themeService.theme() === 'dark' ? 'sun' : 'moon'" [size]="24"></lucide-icon>
+          </button>
           
           <div>
-            <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Project Board</h1>
-            <p class="text-slate-500 text-xs lg:text-sm mt-0.5 lg:mt-1">Manage, track and organize your team tasks.</p>
+            <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Project Board</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm mt-0.5 lg:mt-1">Manage, track and organize your team tasks.</p>
           </div>
         </div>
         
@@ -47,7 +54,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
               [ngModel]="searchQuery()"
               (ngModelChange)="searchQuery.set($event)"
               placeholder="Search tasks..."
-              class="w-full pl-10 pr-4 h-11 bg-white border border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+              class="w-full pl-10 pr-4 h-11 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400"
             >
           </div>
 
@@ -58,7 +65,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
               <select
                 [ngModel]="categoryFilter()"
                 (ngModelChange)="categoryFilter.set($event)"
-                class="w-full sm:w-auto appearance-none pl-9 pr-10 h-11 bg-white border border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all text-sm"
+                class="w-full sm:w-auto appearance-none pl-9 pr-10 h-11 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-slate-900 dark:text-slate-100"
               >
                 <option value="all">All Categories</option>
                 @for (cat of categories; track cat) {
@@ -79,9 +86,9 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
             </button>
           </div>
 
-          <div class="hidden lg:flex items-center gap-1.5 px-3 h-11 bg-slate-100/50 border border-slate-200 rounded-xl text-slate-400 text-xs font-mono">
+          <div class="hidden lg:flex items-center gap-1.5 px-3 h-11 bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-400 text-xs font-mono">
             <span>Shortcut:</span>
-            <kbd class="px-1.5 py-0.5 bg-white border border-slate-300 rounded shadow-sm font-bold text-slate-600">?</kbd>
+            <kbd class="px-1.5 py-0.5 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded shadow-sm font-bold text-slate-600 dark:text-slate-300">?</kbd>
           </div>
         </div>
       </div>
@@ -93,9 +100,9 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
       }
 
       @if (taskService.isLoading()) {
-        <div class="flex flex-col items-center justify-center py-20 bg-white/50 rounded-3xl border border-dashed border-slate-200">
-          <div class="animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-b-indigo-600 mb-4"></div>
-          <p class="text-slate-500 font-medium">Loading project board...</p>
+        <div class="flex flex-col items-center justify-center py-20 bg-white/50 dark:bg-slate-800/50 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+          <div class="animate-spin rounded-full h-10 w-10 border-4 border-slate-200 dark:border-slate-700 border-b-indigo-600 mb-4"></div>
+          <p class="text-slate-500 dark:text-slate-400 font-medium">Loading project board...</p>
         </div>
       } @else {
         <!-- Kanban Board Area with Horizontal Scroll on Mobile -->
@@ -103,13 +110,13 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
           <div class="flex lg:grid lg:grid-cols-3 gap-4 lg:gap-8 min-w-[max-content] lg:min-w-0" cdkDropListGroup>
             
             <!-- TODO Column -->
-            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-slate-50/50 rounded-2xl p-4 lg:p-5 border border-slate-100 shadow-sm shrink-0 snap-center">
+            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl p-4 lg:p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
               <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                 <div class="flex items-center gap-3">
                   <div class="w-2.5 h-2.5 rounded-full bg-slate-400"></div>
-                  <h2 class="text-sm font-bold text-slate-700 uppercase tracking-widest">{{ getStatusLabel(statusMap.TODO) }}</h2>
+                  <h2 class="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.TODO) }}</h2>
                 </div>
-                <span class="bg-white px-2.5 py-1 rounded-lg border border-slate-200 text-slate-500 text-xs font-bold shadow-sm">{{ todoTasks().length }}</span>
+                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 text-xs font-bold shadow-sm">{{ todoTasks().length }}</span>
               </div>
               
               <div
@@ -119,7 +126,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
               >
                 @for (task of todoTasks(); track task.id) {
-                  <div cdkDrag class="bg-white p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 cursor-grab hover:shadow-lg hover:border-indigo-100 transition-all active:cursor-grabbing group">
+                  <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-indigo-100 dark:hover:border-indigo-900 transition-all active:cursor-grabbing group">
                     <div class="flex flex-col gap-2 lg:gap-3">
                       <div class="flex justify-between items-start">
                         <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
@@ -131,15 +138,15 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                           </span>
                         }
                       </div>
-                      <h3 class="text-slate-900 font-bold leading-snug text-sm lg:text-base group-hover:text-indigo-600 transition-colors">{{ task.title }}</h3>
-                      <p class="text-slate-500 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
+                      <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ task.title }}</h3>
+                      <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
                       <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
                         @if (canEdit()) {
                           <div class="flex gap-2">
-                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
+                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-lg transition-all">
                               <lucide-icon name="pencil" [size]="14"></lucide-icon>
                             </button>
-                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
                               <lucide-icon name="trash-2" [size]="14"></lucide-icon>
                             </button>
                           </div>
@@ -152,13 +159,13 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
             </div>
   
             <!-- IN PROGRESS Column -->
-            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-blue-50/40 rounded-2xl p-4 lg:p-5 border border-blue-100/50 shadow-sm shrink-0 snap-center">
+            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-blue-50/40 dark:bg-blue-900/10 rounded-2xl p-4 lg:p-5 border border-blue-100/50 dark:border-blue-800/30 shadow-sm shrink-0 snap-center">
                <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                 <div class="flex items-center gap-3">
                   <div class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></div>
-                  <h2 class="text-sm font-bold text-blue-900 uppercase tracking-widest">{{ getStatusLabel(statusMap.IN_PROGRESS) }}</h2>
+                  <h2 class="text-sm font-bold text-blue-900 dark:text-blue-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.IN_PROGRESS) }}</h2>
                 </div>
-                <span class="bg-white px-2.5 py-1 rounded-lg border border-blue-100 text-blue-600 text-xs font-bold shadow-sm">{{ inProgressTasks().length }}</span>
+                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-blue-100 dark:border-blue-900 text-blue-600 dark:text-blue-300 text-xs font-bold shadow-sm">{{ inProgressTasks().length }}</span>
               </div>
               
               <div
@@ -168,7 +175,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
               >
                 @for (task of inProgressTasks(); track task.id) {
-                  <div cdkDrag class="bg-white p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 cursor-grab hover:shadow-lg hover:border-blue-200 transition-all active:cursor-grabbing group">
+                  <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all active:cursor-grabbing group">
                      <div class="flex flex-col gap-2 lg:gap-3">
                       <div class="flex justify-between items-start">
                         <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
@@ -180,15 +187,15 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                           </span>
                         }
                       </div>
-                      <h3 class="text-slate-900 font-bold leading-snug text-sm lg:text-base group-hover:text-blue-600 transition-colors">{{ task.title }}</h3>
-                      <p class="text-slate-500 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
+                      <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ task.title }}</h3>
+                      <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
                       <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
                         @if (canEdit()) {
                           <div class="flex gap-2">
-                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-lg transition-all">
                               <lucide-icon name="pencil" [size]="14"></lucide-icon>
                             </button>
-                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
                               <lucide-icon name="trash-2" [size]="14"></lucide-icon>
                             </button>
                           </div>
@@ -201,13 +208,13 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
             </div>
   
             <!-- COMPLETED Column -->
-            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-green-50/40 rounded-2xl p-4 lg:p-5 border border-green-100/50 shadow-sm shrink-0 snap-center">
+            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-green-50/40 dark:bg-green-900/10 rounded-2xl p-4 lg:p-5 border border-green-100/50 dark:border-green-800/30 shadow-sm shrink-0 snap-center">
                <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                 <div class="flex items-center gap-3">
                   <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                  <h2 class="text-sm font-bold text-green-900 uppercase tracking-widest">{{ getStatusLabel(statusMap.COMPLETED) }}</h2>
+                  <h2 class="text-sm font-bold text-green-900 dark:text-green-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.COMPLETED) }}</h2>
                 </div>
-                <span class="bg-white px-2.5 py-1 rounded-lg border border-green-100 text-green-600 text-xs font-bold shadow-sm">{{ completedTasks().length }}</span>
+                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-green-100 dark:border-green-900 text-green-600 dark:text-green-300 text-xs font-bold shadow-sm">{{ completedTasks().length }}</span>
               </div>
               
               <div
@@ -217,21 +224,21 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
               >
                 @for (task of completedTasks(); track task.id) {
-                  <div cdkDrag class="bg-white p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 cursor-grab hover:shadow-lg hover:border-green-200 transition-all active:cursor-grabbing group opacity-80 hover:opacity-100">
+                  <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-green-200 dark:hover:border-green-800 transition-all active:cursor-grabbing group opacity-80 hover:opacity-100">
                      <div class="flex flex-col gap-2 lg:gap-3">
                       <div class="flex justify-between items-start">
                         <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
                           {{ getCategoryLabel(task.category) }}
                         </span>
                       </div>
-                      <h3 class="text-slate-900 font-bold leading-snug text-sm lg:text-base line-through opacity-50">{{ task.title }}</h3>
+                      <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base line-through opacity-50">{{ task.title }}</h3>
                       <div class="flex justify-end gap-2 mt-1 lg:mt-2">
                         @if (canEdit()) {
                           <div class="flex gap-2">
-                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
+                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all">
                               <lucide-icon name="pencil" [size]="14"></lucide-icon>
                             </button>
-                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
                               <lucide-icon name="trash-2" [size]="14"></lucide-icon>
                             </button>
                           </div>
@@ -248,16 +255,16 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
 
       @if (isModalOpen()) {
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div class="bg-white rounded-3xl w-full max-w-lg p-10 relative shadow-2xl border border-slate-200 animate-in zoom-in duration-200">
+          <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-lg p-10 relative shadow-2xl border border-slate-200 dark:border-slate-700 animate-in zoom-in duration-200">
             <button
               (click)="isModalOpen.set(false)"
-              class="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
+              class="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all"
             >
               <lucide-icon name="x" [size]="20"></lucide-icon>
             </button>
             <div class="mb-8">
-              <h2 class="text-2xl font-bold text-slate-900">{{ editingTask() ? 'Update Task' : 'Create New Task' }}</h2>
-              <p class="text-slate-500 text-sm mt-1">Fill in the details below to {{ editingTask() ? 'edit your' : 'start a' }} task.</p>
+              <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ editingTask() ? 'Update Task' : 'Create New Task' }}</h2>
+              <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Fill in the details below to {{ editingTask() ? 'edit your' : 'start a' }} task.</p>
             </div>
             
             <app-task-form
@@ -281,8 +288,10 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
     .cdk-drop-list-dragging .cdk-drag { transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); }
   `]
 })
+
 export class TaskListPageComponent implements OnInit, OnDestroy {
   public taskService = inject(TaskService);
+  public themeService = inject(ThemeService);
   private authStore = inject(AuthStore);
   public shortcutService = inject(KeyboardShortcutsService);
   public uiState = inject(UiStateService);

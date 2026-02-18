@@ -53,9 +53,31 @@
     --radius-pill: 9999px;
 
     /* Semantic Colors */
-    --color-surface: #ffffff;
-    --color-surface-glass: rgba(255, 255, 255, 0.7);
-    --color-text-primary: #111827;
-    --color-text-secondary: #4b5563;
-    --color-border-subtle: rgba(229, 231, 235, 1);
+    --color-surface: var(--surface);
+    --color-surface-glass: var(--surface-glass);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-border-subtle: var(--border-subtle);
+}
+
+@layer base {
+    :root {
+        --surface: #ffffff;
+        --surface-glass: rgba(255, 255, 255, 0.7);
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --border-subtle: #e5e7eb;
+    }
+
+    .dark {
+        --surface: #111827;
+        /* gray-900 */
+        --surface-glass: rgba(17, 24, 39, 0.7);
+        --text-primary: #f9fafb;
+        /* gray-50 */
+        --text-secondary: #9ca3af;
+        /* gray-400 */
+        --border-subtle: #374151;
+        /* gray-700 */
+    }
 }
