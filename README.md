@@ -111,6 +111,112 @@ This implementation satisfies all core requirements:
 └── tools/                  # Nx workspace tools
 ```
 
+## 🗄️ Data Model
+
+The application uses a relational database model with TypeORM entities.
+
+### Schema Description
+
+- **Organization:** The root entity for multi-tenancy. Supports a hierarchical structure via self-referencing `parentOrganizationId`.
+- **User:** Belongs to a single Organization. Linked to Supabase Auth via `supabaseUserId`.
+- **Task:** Creating by a User within an Organization. Access is scoped to the Organization.
+- **AuditLog:** Records critical actions (create, update, delete) performed by users.
+
+### ER Diagram
+
+```mermaid
+erDiagram
+    Organization ||--o{ User : "has members"
+    Organization ||--o{ Task : "has tasks"
+    Organization ||--o{ Organization : "parent of"
+    
+    User ||--o{ Task : "creates"
+    User {
+        uuid id
+        string email
+        enum role
+        string supabaseUserId
+    }
+    
+    Organization {
+        uuid id
+        string name
+        uuid parentOrganizationId
+    }
+
+    Task {
+        uuid id
+        string title
+        string status
+        string category
+    }
+    
+    AuditLog {
+        uuid id
+        string action
+        string resourceType
+        timestamp timestamp
+    }
+```
+
+## 🔐 Access Control Implementation
+
+### Hierarchy & Permissions
+The system implements a hierarchical Role-Based Access Control (RBAC) model:
+
+1.  **Organization Level:** Users are scoped to a specific Organization.
+    *   **Parent Orgs:** Admins in parent organizations can view data in child organizations.
+    *   **Child Orgs:** Data is strictly isolated from other organizations.
+2.  **User Roles:**
+    *   **Owner:** Full access to Organization settings and all data.
+    *   **Admin:** Can manage tasks and users but cannot delete the Organization.
+    *   **Viewer:** Read-only access to tasks.
+
+### JWT Integration
+1.  **Authentication:** The frontend authenticates with Supabase and receives a JWT.
+2.  **Transmission:** The JWT is sent in the `Authorization: Bearer <token>` header.
+3.  **Validation:** `Apps/api` validates the token using `Passport-JWT` strategy against the Supabase secret.
+4.  **Context:** The API extracts the `sub` (Supabase User ID) to look up the internal User entity and attach it to the Request object.
+5.  **Authorization:** `RolesGuard` checks the User's role against the route's `@Roles()` decorator.
+
+## 📡 API Documentation
+
+### Endpoints
+
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| **Auth** | | | |
+| `GET` | `/auth/me` | Get current user profile | Authenticated |
+| **Tasks** | | | |
+| `GET` | `/tasks` | List all tasks for user's org | Read+ |
+| `POST` | `/tasks` | Create a new task | Admin/Owner |
+| `PUT` | `/tasks/:id` | Update a task | Admin/Owner |
+| `DELETE` | `/tasks/:id` | Delete a task | Admin/Owner |
+| **Users** | | | |
+| `PUT` | `/users/:id` | Update user profile | Self/Admin |
+| `PATCH` | `/users/preferences` | Update UI preferences (theme) | Self |
+
+### Sample Request/Response
+
+**GET /tasks**
+
+*Request Header:*
+`Authorization: Bearer eyJhbGciOiJIUzI1Ni...`
+
+*Response (200 OK):*
+```json
+[
+  {
+    "id": "a1b2c3d4-...",
+    "title": "Update Security Protocols",
+    "status": "IN_PROGRESS",
+    "category": "WORK",
+    "organizationId": "org-123",
+    "createdAt": "2023-10-27T10:00:00Z"
+  }
+]
+```
+
 ## 🏁 Getting Started
 
 ### Prerequisites
