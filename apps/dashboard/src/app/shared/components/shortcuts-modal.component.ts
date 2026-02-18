@@ -8,8 +8,8 @@ import { LucideAngularModule } from 'lucide-angular';
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   template: `
-    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[100]" (click)="close()">
-      <div class="bg-surface rounded-modal w-full max-w-lg p-grid-2xl relative shadow-2xl border border-border-subtle animate-in zoom-in duration-200" (click)="$event.stopPropagation()">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[100]" (click)="close()" (keydown.escape)="close()" tabindex="0">
+      <div class="bg-surface rounded-modal w-full max-w-lg p-grid-2xl relative shadow-2xl border border-border-subtle animate-in zoom-in duration-200" (click)="$event.stopPropagation()" (keydown)="handleKeydown($event)" tabindex="-1">
         <button
           (click)="close()"
           class="absolute top-grid-lg right-grid-lg p-grid-sm text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all"
@@ -73,6 +73,12 @@ export class ShortcutsModalComponent {
   @HostListener('window:keydown.escape')
   handleEscape() {
     this.close();
+  }
+
+  handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.close();
+    }
   }
 
   close() {

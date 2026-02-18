@@ -39,8 +39,8 @@
       "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data": [
         "libs/dashboard/data/src/lib/entities.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/*": [
-        "libs/dashboard/data/src/lib/*"
+      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/enums": [
+        "libs/dashboard/data/src/lib/enums.ts"
       ],
       "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-design-system": [
         "libs/dashboard/design-system/src/lib/tokens.ts"

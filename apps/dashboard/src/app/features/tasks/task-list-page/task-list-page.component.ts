@@ -244,8 +244,8 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
             
             <app-task-form
               [task]="editingTask() || undefined"
-              (onSubmit)="editingTask() ? handleUpdate($event) : handleCreate($event)"
-              (cancel)="isModalOpen.set(false)"
+              (taskSubmit)="editingTask() ? handleUpdate($event) : handleCreate($event)"
+              (formCancel)="isModalOpen.set(false)"
             ></app-task-form>
           </div>
         </div>

@@ -1,4 +1,4 @@
-
+/* eslint-disable @angular-eslint/prefer-inject */
 import { Injectable, Inject } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';

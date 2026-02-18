@@ -28,17 +28,18 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
           <!-- Tabs -->
           <div class="mb-8 border-b border-gray-200">
             <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
-              <button
-                *ngFor="let tab of tabs"
-                (click)="activeTab.set(tab.id)"
-                [class.border-indigo-500]="activeTab() === tab.id"
-                [class.text-indigo-600]="activeTab() === tab.id"
-                [class.border-transparent]="activeTab() !== tab.id"
-                [class.text-gray-500]="activeTab() !== tab.id"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-gray-700 hover:border-gray-300 transition-colors"
-                [attr.aria-current]="activeTab() === tab.id ? 'page' : null">
-                {{ tab.label }}
-              </button>
+              @for (tab of tabs; track tab.id) {
+                <button
+                  (click)="activeTab.set(tab.id)"
+                  [class.border-indigo-500]="activeTab() === tab.id"
+                  [class.text-indigo-600]="activeTab() === tab.id"
+                  [class.border-transparent]="activeTab() !== tab.id"
+                  [class.text-gray-500]="activeTab() !== tab.id"
+                  class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-gray-700 hover:border-gray-300 transition-colors"
+                  [attr.aria-current]="activeTab() === tab.id ? 'page' : null">
+                  {{ tab.label }}
+                </button>
+              }
             </nav>
           </div>
 
@@ -57,16 +58,16 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
               @if (activeTab() === 'profile') {
                 <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="space-y-6">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" formControlName="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm h-10 px-3 border">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input id="name" type="text" formControlName="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm h-10 px-3 border">
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" formControlName="email" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm sm:text-sm h-10 px-3 border text-gray-500" readonly>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input id="email" type="email" formControlName="email" class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm sm:text-sm h-10 px-3 border text-gray-500" readonly>
                     <p class="mt-1 text-xs text-gray-500">Email is managed via Supabase auth provider.</p>
                   </div>
                    <div>
-                    <label class="block text-sm font-medium text-gray-700">Role</label>
+                    <span class="block text-sm font-medium text-gray-700">Role</span>
                      <div class="mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 capitalize">
                       {{ profile()?.role }}
                     </div>
@@ -94,7 +95,7 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
                  @if (canViewOrg()) {
                   <div class="space-y-6">
                     <div>
-                      <label class="block text-sm font-medium text-gray-700">Organization ID</label>
+                      <span class="block text-sm font-medium text-gray-700">Organization ID</span>
                       <div class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm sm:text-sm h-10 px-3 border flex items-center text-gray-900 font-mono">
                          {{ organization()?.id }}
                       </div>
@@ -132,8 +133,8 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
                     </div>
 
                     <div class="border-t border-gray-200 pt-6">
-                      <label class="block text-sm font-medium text-gray-700">Session Timeout (minutes)</label>
-                      <select formControlName="sessionTimeout" 
+                      <label for="sessionTimeout" class="block text-sm font-medium text-gray-700">Session Timeout (minutes)</label>
+                      <select id="sessionTimeout" formControlName="sessionTimeout" 
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border h-10">
                         <option [value]="15">15 minutes</option>
                         <option [value]="30">30 minutes</option>
@@ -177,8 +178,8 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
                @if (activeTab() === 'preferences') {
                 <form [formGroup]="preferencesForm" (ngSubmit)="savePreferences()" class="space-y-6">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Theme</label>
-                    <div class="mt-2 grid grid-cols-3 gap-3 sm:grid-cols-6">
+                    <span id="theme-label" class="block text-sm font-medium text-gray-700">Theme</span>
+                    <div class="mt-2 grid grid-cols-3 gap-3 sm:grid-cols-6" role="radiogroup" aria-labelledby="theme-label">
                       <label 
                         [class.ring-2]="preferencesForm.get('theme')?.value === 'light'"
                         [class.ring-indigo-500]="preferencesForm.get('theme')?.value === 'light'"
@@ -204,8 +205,8 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
                   </div>
 
                   <div>
-                     <label class="block text-sm font-medium text-gray-700">Default Task View</label>
-                     <select formControlName="defaultView" 
+                     <label for="defaultView" class="block text-sm font-medium text-gray-700">Default Task View</label>
+                     <select id="defaultView" formControlName="defaultView" 
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border h-10">
                         <option value="kanban">Kanban Board</option>
                         <option value="list">List View</option>
@@ -213,8 +214,8 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
                   </div>
 
                   <div>
-                      <label class="block text-sm font-medium text-gray-700">Items Per Page</label>
-                      <select formControlName="itemsPerPage" 
+                      <label for="itemsPerPage" class="block text-sm font-medium text-gray-700">Items Per Page</label>
+                      <select id="itemsPerPage" formControlName="itemsPerPage" 
                          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border h-10">
                          <option [value]="10">10 items</option>
                          <option [value]="20">20 items</option>

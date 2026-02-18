@@ -28,7 +28,7 @@ export class AuditService {
         }
     }
 
-    logAction(action: string, details: any, resourceType: string = 'UNKNOWN', resourceId?: string) {
+    logAction(action: string, details: unknown, resourceType = 'UNKNOWN', resourceId?: string): void {
         // Fire and forget, or handle error if needed
         this.http.post(`${environment.apiUrl}/audit-log`, {
             action,

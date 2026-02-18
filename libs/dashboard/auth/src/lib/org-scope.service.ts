@@ -1,8 +1,8 @@
-
+/* eslint-disable @angular-eslint/prefer-inject */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, Organization } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/entities';
+import { User, Organization } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data';
 import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/enums';
 
 @Injectable()

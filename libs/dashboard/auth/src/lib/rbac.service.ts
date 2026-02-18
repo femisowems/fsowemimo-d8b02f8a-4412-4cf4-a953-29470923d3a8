@@ -1,6 +1,6 @@
-
+/* eslint-disable @angular-eslint/prefer-inject */
 import { Injectable, Inject } from '@nestjs/common';
-import { User, Task } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/entities';
+import { User, Task } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data';
 import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/enums';
 import { OrgScopeService } from './org-scope.service';
 
@@ -22,6 +22,7 @@ export class RbacService {
         return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     canCreateTask(_user: User): boolean {
         // All roles allowed to create task in their own org
         // "organizationId must equal user.organizationId" is a data constraint check rather than permission boolean here
@@ -29,6 +30,7 @@ export class RbacService {
         return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async canReadTasks(_user: User): Promise<boolean> {
         // Logic handled in service query filtering usually, but as a check:
         return true;
