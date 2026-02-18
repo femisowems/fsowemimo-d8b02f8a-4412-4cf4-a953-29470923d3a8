@@ -10,7 +10,7 @@ export class UsersService {
         private usersRepository: Repository<User>
     ) { }
 
-    async updateUser(id: string, updateData: any) {
+    async updateUser(id: string, updateData: Partial<User>) {
         await this.usersRepository.update(id, updateData);
         return this.usersRepository.findOne({ where: { id } });
     }
