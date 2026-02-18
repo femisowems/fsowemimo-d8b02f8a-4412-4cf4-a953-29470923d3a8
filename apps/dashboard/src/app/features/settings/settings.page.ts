@@ -1,12 +1,11 @@
-import { Component, computed, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { AuthStore } from '../../core/services/auth.store';
 import { UserRole } from '../../core/models';
 import { SettingsService } from './settings.service';
-import { UserSettings, SettingsTab, SettingsPreferences, SettingsProfile, SettingsOrganization } from './settings.model';
+import { SettingsTab, SettingsPreferences, SettingsProfile, SettingsOrganization } from './settings.model';
 import { ThemeService, Theme } from '../../core/services/theme.service';
 
 @Component({
@@ -345,10 +344,10 @@ export class SettingsPage implements OnInit {
   // --- Actions ---
 
   saveProfile() {
-    if (this.profileForm.invalid) return;
+    if (this.profileForm.invalid || !this.profile()) return;
     this.isSaving.set(true);
     const updatedProfile = {
-      ...this.profile()!,
+      ...(this.profile() as SettingsProfile),
       name: this.profileForm.get('name')?.value
     };
 

@@ -1,8 +1,8 @@
-import { Injectable, signal, computed, inject, effect } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SupabaseService } from './supabase.service';
-import { User, UserRole } from '../models';
+import { User } from '../models';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 

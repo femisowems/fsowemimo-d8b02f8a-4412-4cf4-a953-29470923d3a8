@@ -14,10 +14,13 @@ import { UiStateService } from '../../core/services/ui-state.service';
     <div class="flex h-screen bg-surface transition-colors duration-300 relative">
       <!-- Mobile Backdrop -->
       @if (uiState.isSidebarOpen()) {
-        <div 
-          class="fixed inset-0 bg-gray-900/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
-          (click)="uiState.isSidebarOpen.set(false)">
-        </div>
+        <button 
+          type="button"
+          class="fixed inset-0 bg-gray-900/50 z-40 lg:hidden backdrop-blur-sm transition-opacity w-full h-full cursor-default"
+          aria-label="Close sidebar"
+          (click)="uiState.isSidebarOpen.set(false)"
+          tabindex="-1">
+        </button>
       }
 
       <app-sidebar></app-sidebar>

@@ -57,7 +57,7 @@ export class ShortcutsModalComponent {
 
   groupedShortcuts = () => {
     const shortcuts = this.shortcutService.getShortcuts();
-    const groups: Record<string, any[]> = {};
+    const groups: Record<string, { key: string; description: string; category: string }[]> = {};
 
     shortcuts.forEach(s => {
       if (!groups[s.category]) groups[s.category] = [];
