@@ -9,8 +9,7 @@ A modern, secure, and scalable task management application built with an Nx mono
 > [!NOTE]
 > Covers: RBAC flow, JWT auth lifecycle, Org scoping, Guard + decorator architecture, Trade-offs and future roadmap.
 
-[![Watch the Demo Video](https://cdn.loom.com/sessions/thumbnails/a38330e102fc45ac91246d0631e3a378-c60bd0668798397d.jpg)](https://www.loom.com/share/a38330e102fc45ac91246d0631e3a378)
-
+[![Secure Task Management App – Walkthrough Video](https://cdn.loom.com/sessions/thumbnails/a38330e102fc45ac91246d0631e3a378-c60bd0668798397d-full-play.gif)](https://www.loom.com/share/a38330e102fc45ac91246d0631e3a378)
 
 [Watch the Walkthrough/Demo Video](https://www.loom.com/share/a38330e102fc45ac91246d0631e3a378)
 
