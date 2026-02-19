@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthStore } from '../../../core/services/auth.store';
 import { SupabaseService } from '../../../core/services/supabase.service';
+import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
 
 @Component({
   selector: 'app-signup-page',
@@ -37,11 +38,13 @@ import { SupabaseService } from '../../../core/services/supabase.service';
                 [attr.aria-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
             </div>
             <div class="space-y-grid-xs">
-              <label for="org-id" class="text-sm font-medium text-slate-700">Organization ID</label>
-              <input formControlName="organizationId" id="org-id" name="organizationId" type="text" required 
-                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all" 
-                placeholder="e.g. org-1"
-                [attr.aria-invalid]="signupForm.get('organizationId')?.invalid && signupForm.get('organizationId')?.touched">
+              <label for="role" class="text-sm font-medium text-slate-700">User Role</label>
+              <select formControlName="role" id="role" name="role" required
+                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all bg-white">
+                @for (role of roles; track role) {
+                  <option [value]="role">{{ role }}</option>
+                }
+              </select>
             </div>
           </div>
 
@@ -84,6 +87,8 @@ export class SignupPageComponent implements OnInit {
   private supabase = inject(SupabaseService);
   private router = inject(Router);
 
+  roles = Object.values(UserRole);
+
   constructor() {
     effect(() => {
       if (this.authStore.isAuthenticated() && !this.authStore.isLoading()) {
@@ -101,7 +106,7 @@ export class SignupPageComponent implements OnInit {
   signupForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    organizationId: ['', [Validators.required]]
+    role: [UserRole.OWNER, [Validators.required]]
   });
 
   isLoading = signal(false);
@@ -115,19 +120,29 @@ export class SignupPageComponent implements OnInit {
       this.isLoading.set(true);
       this.error.set('');
 
-      const { email, password, organizationId } = this.signupForm.value;
-      const { error } = await this.supabase.auth.signUp({
+      const { email, password, role } = this.signupForm.value;
+
+      // Auto-generate a new Organization ID for the user
+      const organizationId = crypto.randomUUID();
+
+      const { data, error } = await this.supabase.auth.signUp({
         email: email!,
         password: password!,
         options: {
           data: {
             organization_id: organizationId,
-            role: 'Owner' // Default for new signups in this simplified version
+            role: role // Use selected role
           }
         }
       });
 
       if (error) throw error;
+
+      // Supabase returns a fake success for existing users if "Prevent user enumeration" is enabled.
+      // We can detect this if the returned user has no identities (and email confirmation is on).
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        throw new Error('User already registered');
+      }
 
       this.success.set(true);
     } catch (err: any) {
