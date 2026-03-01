@@ -61,6 +61,20 @@ This implementation satisfies all core requirements:
 
 ## 🔮 Future Improvements & Recent Enhancements
 
+### 🧪 Quality Assurance: Comprehensive Unit Testing (New)
+
+To align with the "champion of best practices for well-tested code" standard, backend tests have been fully implemented.
+
+- **Critical Logic Covered:** Wrote and integrated full `Jest` unit tests for the NestJS API Guards, `TasksService`, `TasksController`, `UsersService`, and `UsersController` ensuring maximum coverage.
+- **Dependency Isolation:** Adopted advanced DI mocking techniques to properly isolate business logic from structural elements (`RbacService`, `Reflector`, Repositories).
+
+### ⚙️ CI/CD: Enterprise Pipeline (New)
+
+The project's GitHub actions CI/CD pipeline was entirely redesigned.
+
+- **Nx Affected Tooling:** The CI pipeline now intelligently isolates builds, tests, and linting based purely on the `git` dependency graph calculation by leveraging `nrwl/nx-set-shas@v4` and `npx nx affected`.
+- **Performance:** This ensures that checks run extremely quickly, executing in parallel (`--parallel=3`), modeling an enterprise-ready `Agile/Scrum` delivery environment capable of handling high developer throughput without slow merge jobs.
+
 ### 🚀 Scalability: Event-Driven Architecture (New)
 
 To support massive scale (a critical requirement for Jobber's ecosystem), the Audit Logging system has been refactored to an **Event-Driven Architecture** using `EventEmitter2`.
