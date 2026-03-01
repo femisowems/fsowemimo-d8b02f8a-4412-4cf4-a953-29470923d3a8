@@ -2,41 +2,36 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
-  lint:
-    name: Lint
+  main:
+    name: Nx Affected Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Lint
-        run: npm run lint
 
-  test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      # Derive appropriate SHAs for base and head for `nx affected` commands
+      - uses: nrwl/nx-set-shas@v4
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
-      - name: Run Unit Tests
-        run: npm run test
+
+      - name: Run Linting (Affected)
+        run: npx nx affected -t lint --parallel=3
+
+      - name: Run Unit Tests (Affected)
+        run: npx nx affected -t test --parallel=3 --configuration=ci
+
+      - name: Run Build (Affected)
+        run: npx nx affected -t build --parallel=3

@@ -10,9 +10,11 @@ import { AppController } from './app.controller';
 import { User, Organization, Task, AuditLog, Permission } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
     imports: [
+        EventEmitterModule.forRoot(),
         TypeOrmModule.forRootAsync({
             useFactory: () => {
                 const isPostgres = process.env.DATABASE_URL?.startsWith('postgres');

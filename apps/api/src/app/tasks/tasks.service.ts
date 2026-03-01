@@ -5,7 +5,7 @@ import { Repository, In } from 'typeorm';
 import { Task, User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
 import { OrgScopeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/org-scope.service';
-import { AuditService } from '../audit/audit.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ActionType, UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
 
 @Injectable()
@@ -16,15 +16,15 @@ export class TasksService {
         @Inject(RbacService)
         private rbacService: RbacService,
         @Inject(OrgScopeService)
+        @Inject(OrgScopeService)
         private orgScopeService: OrgScopeService,
-        @Inject(AuditService)
-        private auditService: AuditService
+        private eventEmitter: EventEmitter2
     ) { }
 
     async create(user: User, taskData: Partial<Task>): Promise<Task> {
         // CreateTask: All roles allowed, orgId must match user's org
         if (taskData.organizationId && taskData.organizationId !== user.organizationId) {
-            await this.auditService.logAction(user.id, ActionType.CREATE, 'Task', 'BLOCKED: Wrong Org');
+            this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.CREATE, resourceType: 'Task', resourceId: 'BLOCKED: Wrong Org' });
             throw new ForbiddenException('Cannot create task in another organization');
         }
 
@@ -38,7 +38,7 @@ export class TasksService {
         // but setting ID column usually enough.
 
         const saved = await this.tasksRepo.save(newTask);
-        await this.auditService.logAction(user.id, ActionType.CREATE, 'Task', saved.id);
+        this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.CREATE, resourceType: 'Task', resourceId: saved.id });
         return saved;
     }
 
@@ -72,13 +72,13 @@ export class TasksService {
 
         const allowed = await this.rbacService.canUpdateTask(user, task);
         if (!allowed) {
-            await this.auditService.logAction(user.id, ActionType.UPDATE, 'Task', `BLOCKED: Unauthorized ${id}`);
+            this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.UPDATE, resourceType: 'Task', resourceId: `BLOCKED: Unauthorized ${id}` });
             throw new ForbiddenException('Cannot update this task');
         }
 
         Object.assign(task, updateData);
         const updated = await this.tasksRepo.save(task);
-        await this.auditService.logAction(user.id, ActionType.UPDATE, 'Task', id);
+        this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.UPDATE, resourceType: 'Task', resourceId: id });
         return updated;
     }
 
@@ -88,11 +88,11 @@ export class TasksService {
 
         const allowed = await this.rbacService.canDeleteTask(user, task);
         if (!allowed) {
-            await this.auditService.logAction(user.id, ActionType.DELETE, 'Task', `BLOCKED: Unauthorized ${id}`);
+            this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.DELETE, resourceType: 'Task', resourceId: `BLOCKED: Unauthorized ${id}` });
             throw new ForbiddenException('Cannot delete this task');
         }
 
         await this.tasksRepo.remove(task);
-        await this.auditService.logAction(user.id, ActionType.DELETE, 'Task', id);
+        this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.DELETE, resourceType: 'Task', resourceId: id });
     }
 }

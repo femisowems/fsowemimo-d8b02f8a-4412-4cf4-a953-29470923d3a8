@@ -8,18 +8,19 @@ import { UserRole, ActionType } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-2947092
 // Re-using existent guards from previous steps or creating new ones if needed.
 // Requirement says "JwtAuthGuard - protect ALL task and audit endpoints"
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 @Controller('audit-log')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AuditController {
-    constructor(@Inject(AuditService) private auditService: AuditService) { }
+    constructor(
+        @Inject(AuditService) private auditService: AuditService,
+        private eventEmitter: EventEmitter2
+    ) { }
 
     @Get()
     @Roles(UserRole.OWNER, UserRole.ADMIN)
     async findAll() {
-        // Basic implementation to return logs
-        // Assuming auditService has findAll method, or we use repo directly if service was minimal
-        // The service I created in step 151 only has logAction. I should add findAll to service first or just use repo here?
-        // Better to update service.
         return this.auditService.findAll();
     }
 
@@ -59,6 +60,13 @@ export class AuditController {
         if (resourceType === 'TASK') resourceType = 'Task';
         if (resourceType === 'ORGANIZATION') resourceType = 'Organization';
 
-        return this.auditService.logAction(req.user.id, action, resourceType, body.resourceId);
+        this.eventEmitter.emit('audit.log', {
+            userId: req.user.id,
+            action,
+            resourceType,
+            resourceId: body.resourceId
+        });
+        
+        return { success: true };
     }
 }

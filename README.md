@@ -13,10 +13,10 @@ A modern, secure, and scalable task management application built with an Nx mono
 
 [Watch the Walkthrough/Demo Video](https://www.loom.com/share/a38330e102fc45ac91246d0631e3a378)
 
-
 ## 📜 Assessment Alignment
 
 This implementation satisfies all core requirements:
+
 - **JWT Authentication:** Real implementation with Supabase/Passport (no mocks).
 - **Hierarchical RBAC:** Role-based access control with guards and decorators.
 - **Org-scoped Access Control:** Data isolation at the query level.
@@ -29,12 +29,14 @@ This implementation satisfies all core requirements:
 ## 🚀 Key Features
 
 ### Core Functionality
+
 - **Authenticated Dashboard:** Secure user access via Supabase Auth.
 - **Task Management:** Create, read, update, and delete tasks with ease.
 - **Organization Support:** Manage tasks within different organization contexts.
 - **Role-Based Access Control (RBAC):** Granular permission management.
 
 ### 📈 Bonus Features Implemented
+
 - **Dark Mode Toggle:** Fully supported theme switching.
 - **Keyboard Shortcuts:** Productivity-focused shortcuts (Press `?` to view).
 - **Task Analytics:** Visual completion bar chart.
@@ -45,30 +47,42 @@ This implementation satisfies all core requirements:
 ## 📊 Trade-offs & Design Decisions
 
 ### Chosen
+
 - **Decorator-based RBAC:** Prioritized clarity and developer experience for defining permissions.
 - **Shared DTOs:** Ensures type safety across Frontend and Backend.
 - **Org Scoping at Query Layer:** Implemented for performance and data isolation.
 - **Supabase for Auth:** leveraged for secure JWT issuance and user management without reinventing the wheel.
 
 ### Not Implemented (Time-boxed)
+
 - **Refresh Tokens:** Standard short-lived access tokens used.
 - **RBAC Caching Layer:** Permissions are checked on every request for simplicity.
 - **Field-level Permissions:** Focus remained on resource-level access.
 
-## 🔮 Future Improvements
+## 🔮 Future Improvements & Recent Enhancements
+
+### 🚀 Scalability: Event-Driven Architecture (New)
+
+To support massive scale (a critical requirement for Jobber's ecosystem), the Audit Logging system has been refactored to an **Event-Driven Architecture** using `EventEmitter2`.
+
+- **Decoupled Logic:** The `TasksService` now emits events (`audit.log`) instead of injecting the `AuditService` directly.
+- **Performance:** Asynchronous event listeners (`@OnEvent('audit.log', { async: true })`) ensure that audit logs do not block the main request execution thread, drastically improving API response times when creating or modifying tasks at scale.
 
 ### Security
+
 - **Refresh Token Rotation:** Enhance session security.
 - **CSRF Protection:** Additional layer for web security.
 - **RBAC Caching (Redis):** Improve performance for complex permission checks.
 - **Rate Limiting:** Protect API endpoints.
 
 ### Scalability
+
 - **Postgres Row-Level Security:** Move authorization closer to the data.
 - **Event-based Audit Logging:** Decouple logging from business logic.
 - **Microservice Extraction:** Isolate the Auth module if scaling horizontally.
 
 ### Product
+
 - **Advanced Role Delegation:**Allow users to assign roles.
 - **Task Comments & Attachments:** Collaboration features.
 - **Real-time Updates (WebSockets):** Live task board updates.
@@ -85,12 +99,14 @@ This implementation satisfies all core requirements:
 **❤️ Built With:** Angular 19 • NestJS • Nx • Tailwind v4 • TypeORM • Supabase
 
 ### Frontend (Dashboard)
+
 - **Framework:** Angular 19+
 - **Styling:** Tailwind CSS v4 (PostCSS)
 - **State Management:** Angular Signals / Services
 - **Icons:** Lucide Angular
 
 ### Backend (API)
+
 - **Framework:** NestJS
 - **Database:** SQLite (Dev) / PostgreSQL (Prod)
 - **ORM:** TypeORM
@@ -132,7 +148,7 @@ erDiagram
     Organization ||--o{ User : "has members"
     Organization ||--o{ Task : "has tasks"
     Organization ||--o{ Organization : "parent of"
-    
+
     User ||--o{ Task : "creates"
     User {
         uuid id
@@ -140,7 +156,7 @@ erDiagram
         enum role
         string supabaseUserId
     }
-    
+
     Organization {
         uuid id
         string name
@@ -153,7 +169,7 @@ erDiagram
         string status
         string category
     }
-    
+
     AuditLog {
         uuid id
         string action
@@ -165,17 +181,19 @@ erDiagram
 ## 🔐 Access Control Implementation
 
 ### Hierarchy & Permissions
+
 The system implements a hierarchical Role-Based Access Control (RBAC) model:
 
 1.  **Organization Level:** Users are scoped to a specific Organization.
-    *   **Parent Orgs:** Admins in parent organizations can view data in child organizations.
-    *   **Child Orgs:** Data is strictly isolated from other organizations.
+    - **Parent Orgs:** Admins in parent organizations can view data in child organizations.
+    - **Child Orgs:** Data is strictly isolated from other organizations.
 2.  **User Roles:**
-    *   **Owner:** Full access to Organization settings and all data.
-    *   **Admin:** Can manage tasks and users but cannot delete the Organization.
-    *   **Viewer:** Read-only access to tasks.
+    - **Owner:** Full access to Organization settings and all data.
+    - **Admin:** Can manage tasks and users but cannot delete the Organization.
+    - **Viewer:** Read-only access to tasks.
 
 ### JWT Integration
+
 1.  **Authentication:** The frontend authenticates with Supabase and receives a JWT.
 2.  **Transmission:** The JWT is sent in the `Authorization: Bearer <token>` header.
 3.  **Validation:** `Apps/api` validates the token using `Passport-JWT` strategy against the Supabase secret.
@@ -186,27 +204,28 @@ The system implements a hierarchical Role-Based Access Control (RBAC) model:
 
 ### Endpoints
 
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| **Auth** | | | |
-| `GET` | `/auth/me` | Get current user profile | Authenticated |
-| **Tasks** | | | |
-| `GET` | `/tasks` | List all tasks for user's org | Read+ |
-| `POST` | `/tasks` | Create a new task | Admin/Owner |
-| `PUT` | `/tasks/:id` | Update a task | Admin/Owner |
-| `DELETE` | `/tasks/:id` | Delete a task | Admin/Owner |
-| **Users** | | | |
-| `PUT` | `/users/:id` | Update user profile | Self/Admin |
-| `PATCH` | `/users/preferences` | Update UI preferences (theme) | Self |
+| Method    | Endpoint             | Description                   | Access        |
+| :-------- | :------------------- | :---------------------------- | :------------ |
+| **Auth**  |                      |                               |               |
+| `GET`     | `/auth/me`           | Get current user profile      | Authenticated |
+| **Tasks** |                      |                               |               |
+| `GET`     | `/tasks`             | List all tasks for user's org | Read+         |
+| `POST`    | `/tasks`             | Create a new task             | Admin/Owner   |
+| `PUT`     | `/tasks/:id`         | Update a task                 | Admin/Owner   |
+| `DELETE`  | `/tasks/:id`         | Delete a task                 | Admin/Owner   |
+| **Users** |                      |                               |               |
+| `PUT`     | `/users/:id`         | Update user profile           | Self/Admin    |
+| `PATCH`   | `/users/preferences` | Update UI preferences (theme) | Self          |
 
 ### Sample Request/Response
 
 **GET /tasks**
 
-*Request Header:*
+_Request Header:_
 `Authorization: Bearer eyJhbGciOiJIUzI1Ni...`
 
-*Response (200 OK):*
+_Response (200 OK):_
+
 ```json
 [
   {
@@ -223,24 +242,28 @@ The system implements a hierarchical Role-Based Access Control (RBAC) model:
 ## 🏁 Getting Started
 
 ### Prerequisites
+
 - Node.js (v20+)
 - npm (v10+)
 
 ### Installation
 
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd <repository-directory>
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
 3.  **Environment Setup:**
     Create a `.env` file in the root directory:
+
     ```env
     # Supabase Configuration (Required)
     VITE_SUPABASE_URL=your_supabase_url
@@ -261,18 +284,21 @@ You can run both the dashboard and API in parallel.
 Open two terminal tabs.
 
 Tab 1 - API:
+
 ```bash
 npm run start:api
 # Runs on http://localhost:3001
 ```
 
 Tab 2 - Dashboard:
+
 ```bash
 npm run start:dashboard
 # Runs on http://localhost:4200
 ```
 
-*Note: For styles debugging or development, run the Tailwind watcher in a separate terminal:*
+_Note: For styles debugging or development, run the Tailwind watcher in a separate terminal:_
+
 ```bash
 npm run build:tailwind -- --watch
 ```
@@ -280,15 +306,19 @@ npm run build:tailwind -- --watch
 ## 🐛 Troubleshooting
 
 ### Styles Missing?
+
 - Run the Tailwind watcher: `npm run build:tailwind -- --watch`
 - Restart the dashboard server.
 
 ### SQLite "Foreign Key Constraint" Error?
+
 - Delete `database.sqlite` in the root and restart the API (`npm run start:api`).
 
 ### CORS Error on Vercel?
+
 - Ensure `environment.prod.ts` uses the production API URL (not localhost).
 - This is handled by `fileReplacements` in `project.json`.
 
 ---
+
 Built with ❤️ using Nx.
