@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Task, TaskStatus, TaskCategory, TaskPriority } from '../../../core/models';
+import { TaskTimelineComponent } from '../task-timeline/task-timeline.component';
 
 @Component({
   selector: 'app-task-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TaskTimelineComponent],
   template: `
     <form [formGroup]="taskForm" (ngSubmit)="submit()" class="space-y-6">
       <div class="space-y-4">
@@ -83,6 +84,9 @@ import { Task, TaskStatus, TaskCategory, TaskPriority } from '../../../core/mode
         </button>
       </div>
     </form>
+    @if (isEditing && task) {
+      <app-task-timeline [taskId]="task.id"></app-task-timeline>
+    }
   `,
   styles: [`
     :host { display: block; }
@@ -115,8 +119,11 @@ export class TaskFormComponent implements OnInit {
   public getStatusLabel(status: TaskStatus): string {
     const labels: Record<TaskStatus, string> = {
       [TaskStatus.TODO]: 'To Do',
+      [TaskStatus.SCHEDULED]: 'Scheduled',
       [TaskStatus.IN_PROGRESS]: 'In Progress',
-      [TaskStatus.COMPLETED]: 'Completed'
+      [TaskStatus.BLOCKED]: 'Blocked',
+      [TaskStatus.COMPLETED]: 'Completed',
+      [TaskStatus.ARCHIVED]: 'Archived'
     };
     return labels[status];
   }

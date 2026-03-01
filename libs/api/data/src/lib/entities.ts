@@ -147,6 +147,9 @@ export class AuditLog {
     @Column({ type: 'text', nullable: true })
     resourceId!: string;
 
+    @Column({ type: 'simple-json', nullable: true })
+    metadata!: any;
+
     @CreateDateColumn()
     timestamp!: Date;
 }

@@ -12,13 +12,14 @@ import { TaskFormComponent } from '../task-form/task-form.component';
 import { TaskAnalyticsComponent } from '../../analytics/task-analytics.component';
 import { ShortcutsModalComponent } from '../../../shared/components/shortcuts-modal.component';
 import { KeyboardShortcutsService } from '../../../core/services/keyboard-shortcuts.service';
+import { StatusDropdownComponent } from '../status-dropdown/status-dropdown.component';
 
 type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
 
 @Component({
   selector: 'app-task-list-page',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, TaskFormComponent, TaskAnalyticsComponent, ShortcutsModalComponent, FormsModule, DragDropModule],
+  imports: [CommonModule, LucideAngularModule, TaskFormComponent, TaskAnalyticsComponent, ShortcutsModalComponent, StatusDropdownComponent, FormsModule, DragDropModule],
   template: `
     <div class="max-w-7xl mx-auto space-y-6 lg:space-y-10 px-4 py-6 lg:py-8">
       
@@ -127,6 +128,9 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                       </div>
                       <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ task.title }}</h3>
                       <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
+                      <div class="mt-2">
+                        <app-status-dropdown [task]="task"></app-status-dropdown>
+                      </div>
                       <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
                         @if (canEdit()) {
                           <div class="flex gap-2">
@@ -176,6 +180,9 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                       </div>
                       <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ task.title }}</h3>
                       <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
+                      <div class="mt-2">
+                        <app-status-dropdown [task]="task"></app-status-dropdown>
+                      </div>
                       <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
                         @if (canEdit()) {
                           <div class="flex gap-2">
@@ -219,6 +226,9 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                         </span>
                       </div>
                       <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base line-through opacity-50">{{ task.title }}</h3>
+                      <div class="mt-2">
+                        <app-status-dropdown [task]="task"></app-status-dropdown>
+                      </div>
                       <div class="flex justify-end gap-2 mt-1 lg:mt-2">
                         @if (canEdit()) {
                           <div class="flex gap-2">
@@ -355,8 +365,11 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
   public getStatusLabel(status: TaskStatus): string {
     const labels: Record<TaskStatus, string> = {
       [TaskStatus.TODO]: 'To Do',
+      [TaskStatus.SCHEDULED]: 'Scheduled',
       [TaskStatus.IN_PROGRESS]: 'In Progress',
-      [TaskStatus.COMPLETED]: 'Completed'
+      [TaskStatus.BLOCKED]: 'Blocked',
+      [TaskStatus.COMPLETED]: 'Completed',
+      [TaskStatus.ARCHIVED]: 'Archived'
     };
     return labels[status] || status;
   }

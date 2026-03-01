@@ -1,8 +1,9 @@
 
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards, Request, Inject } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // need to implement this file
 import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
+import { PatchTaskStatusDto } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/dtos';
 
 @Controller('tasks')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -23,6 +24,17 @@ export class TasksController {
     update(@Request() req: any, @Param('id') id: string, @Body() body: any) {
         return this.tasksService.update(req.user, id, body);
     }
+
+    @Patch(':id/status')
+    updateStatus(@Request() req: any, @Param('id') id: string, @Body() body: PatchTaskStatusDto) {
+        return this.tasksService.updateStatus(req.user, id, body.status);
+    }
+
+    @Get(':id/audit')
+    getAuditLogs(@Request() req: any, @Param('id') id: string) {
+        return this.tasksService.getTaskAuditLogs(req.user, id);
+    }
+
 
     @Delete(':id')
     remove(@Request() req: any, @Param('id') id: string) {

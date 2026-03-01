@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TasksService } from './tasks.service';
-import { Task, User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
+import { Task, User, AuditLog } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
 import { OrgScopeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/org-scope.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -22,11 +22,16 @@ describe('TasksService', () => {
         remove: jest.fn(),
     };
 
+    const mockAuditLogRepo = {
+        find: jest.fn(),
+    };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 TasksService,
                 { provide: getRepositoryToken(Task), useValue: mockTaskRepo },
+                { provide: getRepositoryToken(AuditLog), useValue: mockAuditLogRepo },
                 {
                     provide: RbacService,
                     useValue: { canUpdateTask: jest.fn(), canDeleteTask: jest.fn() }
@@ -158,6 +163,67 @@ describe('TasksService', () => {
         });
     });
 
+    describe('updateStatus', () => {
+        it('should update task status from TODO to IN_PROGRESS (valid)', async () => {
+            mockTaskRepo.findOne.mockResolvedValue(mockTask); // status: IN_PROGRESS
+            let initialTask = { ...mockTask, status: 'todo' as any };
+            mockTaskRepo.findOne.mockResolvedValue(initialTask);
+            rbacService.canUpdateTask.mockResolvedValue(true);
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
+            mockTaskRepo.save.mockResolvedValue({ ...initialTask, status: 'in-progress' } as Task);
+
+            const result = await service.updateStatus(mockUser, 'task-1', 'in-progress' as any);
+
+            expect(result.status).toBe('in-progress');
+            expect(eventEmitter.emit).toHaveBeenCalledWith('audit.log', expect.objectContaining({
+                action: 'TASK_STATUS_CHANGED',
+                resourceId: 'task-1',
+                metadata: { fromStatus: 'todo', toStatus: 'in-progress' }
+            }));
+        });
+
+        it('should throw BadRequestException on invalid transition', async () => {
+            let initialTask = { ...mockTask, status: 'todo' as any };
+            mockTaskRepo.findOne.mockResolvedValue(initialTask);
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
+
+            // todo -> completed is invalid
+            await expect(service.updateStatus(mockUser, 'task-1', 'completed' as any))
+                .rejects.toThrow();
+        });
+
+        it('should throw ForbiddenException for VIEWER role', async () => {
+            let initialTask = { ...mockTask, status: 'todo' as any };
+            mockTaskRepo.findOne.mockResolvedValue(initialTask);
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
+            const viewerUser = { ...mockUser, role: UserRole.VIEWER } as User;
+
+            await expect(service.updateStatus(viewerUser, 'task-1', 'in-progress' as any))
+                .rejects.toThrow(ForbiddenException);
+        });
+
+        it('should throw ForbiddenException if user cannot update task', async () => {
+            let initialTask = { ...mockTask, status: 'todo' as any };
+            mockTaskRepo.findOne.mockResolvedValue(initialTask);
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
+            rbacService.canUpdateTask.mockResolvedValue(false); // mock forbidden
+
+            await expect(service.updateStatus(mockUser, 'task-1', 'in-progress' as any))
+                .rejects.toThrow(ForbiddenException);
+        });
+
+        it('should throw ForbiddenException if cross-org', async () => {
+            // Task org is 'org-1', user org is 'org-2' and accessible is 'org-2'
+            let initialTask = { ...mockTask, status: 'todo' as any };
+            mockTaskRepo.findOne.mockResolvedValue(initialTask);
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-2']);
+            const differentOrgUser = { ...mockUser, organizationId: 'org-2' };
+
+            await expect(service.updateStatus(differentOrgUser, 'task-1', 'in-progress' as any))
+                .rejects.toThrow(ForbiddenException);
+        });
+    });
+
     describe('delete', () => {
         it('should delete task if allowed', async () => {
             mockTaskRepo.findOne.mockResolvedValue(mockTask);
@@ -174,6 +240,30 @@ describe('TasksService', () => {
             rbacService.canDeleteTask.mockResolvedValue(false);
 
             await expect(service.delete(mockUser, 'task-1'))
+                .rejects.toThrow(ForbiddenException);
+        });
+    });
+
+    describe('getTaskAuditLogs', () => {
+        it('should return audit logs if user is allowed', async () => {
+            mockTaskRepo.findOne.mockResolvedValue(mockTask);
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
+            mockAuditLogRepo.find.mockResolvedValue([{ id: 'log-1' }]);
+
+            const result = await service.getTaskAuditLogs(mockUser, 'task-1');
+
+            expect(mockAuditLogRepo.find).toHaveBeenCalledWith({
+                where: { resourceId: 'task-1', resourceType: 'Task' },
+                order: { timestamp: 'DESC' }
+            });
+            expect(result).toEqual([{ id: 'log-1' }]);
+        });
+
+        it('should throw ForbiddenException if user is in different org without access', async () => {
+            mockTaskRepo.findOne.mockResolvedValue(mockTask); // org-1
+            orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-2']); // can only access org-2
+
+            await expect(service.getTaskAuditLogs(mockUser, 'task-1'))
                 .rejects.toThrow(ForbiddenException);
         });
     });

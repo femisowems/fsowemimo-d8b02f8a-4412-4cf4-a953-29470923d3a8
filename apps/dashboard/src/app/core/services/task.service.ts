@@ -1,6 +1,6 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Task, TaskStatus, TaskCategory } from '../models';
+import { Task, TaskStatus, TaskCategory, AuditLog } from '../models';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 
@@ -78,5 +78,28 @@ export class TaskService {
     async deleteTask(id: string) {
         await firstValueFrom(this.http.delete(`${environment.apiUrl}/tasks/${id}`));
         await this.fetchTasks();
+    }
+
+    async patchTaskStatus(id: string, status: TaskStatus) {
+        // Optimistic UI update
+        const previousTasks = this._tasks();
+        this._tasks.update(tasks => tasks.map(t => t.id === id ? { ...t, status } : t));
+
+        try {
+            await firstValueFrom(this.http.patch(`${environment.apiUrl}/tasks/${id}/status`, { status }));
+            // Success, do not need to re-fetch if we trust the optimistic update, but can optionally:
+            // await this.fetchTasks();
+        } catch (err) {
+            // Revert on error
+            this._tasks.set(previousTasks);
+            this._error.set('Failed to update task status');
+            // Assuming there's a toast service in a real app, we handle UI error simply for now
+            console.error('Failed to update task status', err);
+            throw err;
+        }
+    }
+
+    async getTaskAuditLogs(id: string): Promise<AuditLog[]> {
+        return firstValueFrom(this.http.get<AuditLog[]>(`${environment.apiUrl}/tasks/${id}/audit`));
     }
 }

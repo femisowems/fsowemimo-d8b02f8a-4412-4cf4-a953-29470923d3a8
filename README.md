@@ -42,6 +42,22 @@ This implementation satisfies all core requirements:
 - **Task Analytics:** Visual completion bar chart.
 - **Audit Log:** Comprehensive tracking of user actions.
 
+### ⚙️ Job Workflow Engine (New)
+
+The application now features a robust Job Workflow Engine, upgrading traditional CRUD tasks into an FSM-driven workflow system.
+
+**System Design & UI Strategy:**
+
+- **Finite State Machine (FSM):** Tasks operate under strictly defined state transitions (e.g., `TODO` ↔ `SCHEDULED` ↔ `IN_PROGRESS` ↔ `BLOCKED` → `COMPLETED` → `ARCHIVED`).
+- **Role-Based UI:** The new Status Dropdown Component intelligently filters available transitions based on the user's role (Viewers cannot edit, Admins cannot Archive, Owners have full access).
+- **Optimistic Updates:** The Kanban board utilizes Angular Signals for instantaneous UI updates, with built-in rollback mechanisms if the remote server operation fails.
+- **Task Timeline:** Users can view a complete chronological history of state changes inside the Task Edit modal, dynamically powered by standard `EventEmitter2` backend audit logs.
+
+**API Contract Expansion:**
+
+- `PATCH /tasks/:id/status` - Accepts `{ "status": "..." }`. Validates transition logic & org scoping before persisting.
+- `GET /tasks/:id/audit` - Retrieves an ordered history of task-specific audit events for the frontend timeline rendering.
+
 ![Secure Task Management Dashboard](docs/images/dashboard-preview.png)
 
 ## 📊 Trade-offs & Design Decisions
@@ -226,10 +242,12 @@ The system implements a hierarchical Role-Based Access Control (RBAC) model:
 | `GET`     | `/tasks`             | List all tasks for user's org | Read+         |
 | `POST`    | `/tasks`             | Create a new task             | Admin/Owner   |
 | `PUT`     | `/tasks/:id`         | Update a task                 | Admin/Owner   |
+| `PATCH`   | `/tasks/:id/status`  | Update task workflow status   | Admin/Owner   |
+| `GET`     | `/tasks/:id/audit`   | Get task timeline history     | Read+         |
 | `DELETE`  | `/tasks/:id`         | Delete a task                 | Admin/Owner   |
 | **Users** |                      |                               |               |
 | `PUT`     | `/users/:id`         | Update user profile           | Self/Admin    |
-| `PATCH`   | `/users/preferences` | Update UI preferences (theme) | Self          |
+| `PATCH`   | `/users/preferences` | Update UI preferences         | Self          |
 
 ### Sample Request/Response
 

@@ -1,18 +1,30 @@
 
-import { Injectable, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Task, User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
 import { OrgScopeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/org-scope.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ActionType, UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { ActionType, UserRole, TaskStatus } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { AuditLog } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 
 @Injectable()
 export class TasksService {
+    private readonly allowedTransitions: Record<TaskStatus, TaskStatus[]> = {
+        [TaskStatus.TODO]: [TaskStatus.SCHEDULED, TaskStatus.IN_PROGRESS, TaskStatus.ARCHIVED],
+        [TaskStatus.SCHEDULED]: [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.BLOCKED, TaskStatus.ARCHIVED],
+        [TaskStatus.IN_PROGRESS]: [TaskStatus.TODO, TaskStatus.BLOCKED, TaskStatus.COMPLETED, TaskStatus.ARCHIVED],
+        [TaskStatus.BLOCKED]: [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.ARCHIVED],
+        [TaskStatus.COMPLETED]: [TaskStatus.ARCHIVED],
+        [TaskStatus.ARCHIVED]: []
+    };
+
     constructor(
         @InjectRepository(Task)
         private tasksRepo: Repository<Task>,
+        @InjectRepository(AuditLog)
+        private auditLogsRepo: Repository<AuditLog>,
         @Inject(RbacService)
         private rbacService: RbacService,
         @Inject(OrgScopeService)
@@ -82,6 +94,55 @@ export class TasksService {
         return updated;
     }
 
+    async updateStatus(user: User, id: string, newStatus: TaskStatus): Promise<Task> {
+        const task = await this.tasksRepo.findOne({ where: { id } });
+        if (!task) throw new NotFoundException('Task not found');
+
+        // Verify Org Scoping
+        const accessibleOrgs = await this.orgScopeService.getAccessibleOrganizationIds(user);
+        if (!accessibleOrgs.includes(task.organizationId) && user.organizationId !== task.organizationId) {
+            this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.UPDATE, resourceType: 'Task', resourceId: `BLOCKED: Wrong Org ${id}` });
+            throw new ForbiddenException('Cannot update status for task in another organization');
+        }
+
+        const currentStatus = task.status as TaskStatus;
+
+        // FSM Transition Validation
+        const validNextStatuses = this.allowedTransitions[currentStatus] || [];
+        if (!validNextStatuses.includes(newStatus)) {
+            throw new BadRequestException(`Invalid transition from ${currentStatus} to ${newStatus}`);
+        }
+
+        // Role-based Transition Validation
+        if (user.role === UserRole.VIEWER) {
+            throw new ForbiddenException('Viewers cannot update task status');
+        }
+        if (user.role === UserRole.ADMIN && newStatus === TaskStatus.ARCHIVED) {
+            throw new ForbiddenException('Admins cannot transition tasks to ARCHIVED');
+        }
+        // Owners can do all transitions, no extra check needed
+
+        const allowedToUpdate = await this.rbacService.canUpdateTask(user, task);
+        if (!allowedToUpdate) {
+            this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.UPDATE, resourceType: 'Task', resourceId: `BLOCKED: Unauthorized ${id}` });
+            throw new ForbiddenException('Cannot update this task');
+        }
+
+        task.status = newStatus;
+        const updated = await this.tasksRepo.save(task);
+        
+        // Log STATUS_CHANGED
+        this.eventEmitter.emit('audit.log', { 
+            userId: user.id, 
+            action: 'TASK_STATUS_CHANGED' as ActionType, 
+            resourceType: 'Task', 
+            resourceId: id,
+            metadata: { fromStatus: currentStatus, toStatus: newStatus }
+        });
+        
+        return updated;
+    }
+
     async delete(user: User, id: string): Promise<void> {
         const task = await this.tasksRepo.findOne({ where: { id } });
         if (!task) throw new NotFoundException('Task not found');
@@ -94,5 +155,25 @@ export class TasksService {
 
         await this.tasksRepo.remove(task);
         this.eventEmitter.emit('audit.log', { userId: user.id, action: ActionType.DELETE, resourceType: 'Task', resourceId: id });
+    }
+
+    async getTaskAuditLogs(user: User, id: string): Promise<AuditLog[]> {
+        const task = await this.tasksRepo.findOne({ where: { id } });
+        if (!task) throw new NotFoundException('Task not found');
+
+        // Apply same security constraints as reading the task
+        if (user.role === UserRole.VIEWER && task.organizationId !== user.organizationId) {
+            throw new ForbiddenException('Cannot view audit logs for tasks outside your organization');
+        } else if (user.role !== UserRole.VIEWER) {
+            const accessibleOrgs = await this.orgScopeService.getAccessibleOrganizationIds(user);
+            if (!accessibleOrgs.includes(task.organizationId)) {
+                throw new ForbiddenException('Cannot view audit logs for this task');
+            }
+        }
+
+        return this.auditLogsRepo.find({
+            where: { resourceId: id, resourceType: 'Task' },
+            order: { timestamp: 'DESC' }
+        });
     }
 }

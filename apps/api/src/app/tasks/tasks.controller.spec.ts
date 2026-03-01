@@ -12,7 +12,9 @@ describe('TasksController', () => {
         create: jest.fn(),
         findAll: jest.fn(),
         update: jest.fn(),
+        updateStatus: jest.fn(),
         delete: jest.fn(),
+        getTaskAuditLogs: jest.fn(),
     };
 
     beforeEach(async () => {
@@ -61,6 +63,21 @@ describe('TasksController', () => {
             const dto = { title: 'Updated Task' };
             await controller.update(mockReq, 'task-1', dto);
             expect(service.update).toHaveBeenCalledWith(mockReq.user, 'task-1', dto);
+        });
+    });
+
+    describe('updateStatus', () => {
+        it('should call tasksService.updateStatus', async () => {
+            const dto = { status: 'in-progress' as any };
+            await controller.updateStatus(mockReq, 'task-1', dto);
+            expect(service.updateStatus).toHaveBeenCalledWith(mockReq.user, 'task-1', dto.status);
+        });
+    });
+
+    describe('getAuditLogs', () => {
+        it('should call tasksService.getTaskAuditLogs', async () => {
+            await controller.getAuditLogs(mockReq, 'task-1');
+            expect(service.getTaskAuditLogs).toHaveBeenCalledWith(mockReq.user, 'task-1');
         });
     });
 
