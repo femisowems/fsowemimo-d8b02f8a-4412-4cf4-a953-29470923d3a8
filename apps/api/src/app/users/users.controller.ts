@@ -8,14 +8,14 @@ export class UsersController {
 
     @Put(':id')
     @UseGuards(AuthGuard('supabase-jwt'))
-    async updateUser(@Req() req: any, @Body() updateData: any) {
+    async updateUser(@Req() req: { params: { id: string } }, @Body() updateData: Record<string, unknown>) {
         // Ensure user can only update their own profile or is admin (omitted for brevity)
         return this.usersService.updateUser(req.params.id, updateData);
     }
 
     @Patch('preferences')
     @UseGuards(AuthGuard('supabase-jwt'))
-    async updatePreferences(@Req() req: any, @Body() preferences: any) {
+    async updatePreferences(@Req() req: { user: { id: string } }, @Body() preferences: Record<string, unknown>) {
         return this.usersService.updateUser(req.user.id, { preferences });
     }
 }

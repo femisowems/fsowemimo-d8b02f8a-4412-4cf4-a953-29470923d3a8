@@ -1,5 +1,6 @@
 
 import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards, Request, Inject } from '@nestjs/common';
+import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // need to implement this file
 import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
@@ -11,33 +12,33 @@ export class TasksController {
     constructor(@Inject(TasksService) private tasksService: TasksService) { }
 
     @Post()
-    create(@Request() req: any, @Body() body: any) {
+    create(@Request() req: { user: User }, @Body() body: Record<string, unknown>) {
         return this.tasksService.create(req.user, body);
     }
 
     @Get()
-    findAll(@Request() req: any) {
+    findAll(@Request() req: { user: User }) {
         return this.tasksService.findAll(req.user);
     }
 
     @Put(':id')
-    update(@Request() req: any, @Param('id') id: string, @Body() body: any) {
+    update(@Request() req: { user: User }, @Param('id') id: string, @Body() body: Record<string, unknown>) {
         return this.tasksService.update(req.user, id, body);
     }
 
     @Patch(':id/status')
-    updateStatus(@Request() req: any, @Param('id') id: string, @Body() body: PatchTaskStatusDto) {
+    updateStatus(@Request() req: { user: User }, @Param('id') id: string, @Body() body: PatchTaskStatusDto) {
         return this.tasksService.updateStatus(req.user, id, body.status);
     }
 
     @Get(':id/audit')
-    getAuditLogs(@Request() req: any, @Param('id') id: string) {
+    getAuditLogs(@Request() req: { user: User }, @Param('id') id: string) {
         return this.tasksService.getTaskAuditLogs(req.user, id);
     }
 
 
     @Delete(':id')
-    remove(@Request() req: any, @Param('id') id: string) {
+    remove(@Request() req: { user: User }, @Param('id') id: string) {
         return this.tasksService.delete(req.user, id);
     }
 }

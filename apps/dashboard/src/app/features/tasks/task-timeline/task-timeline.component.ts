@@ -25,8 +25,8 @@ import { AuditLog } from '../../../core/models';
       } @else {
         <div class="flow-root">
           <ul role="list" class="-mb-8">
-            <li *ngFor="let log of logs(); let isLast = last; trackBy: trackById">
-              <div class="relative pb-8">
+            @for (log of logs(); track trackById($index, log); let isLast = $last) {
+              <li class="relative pb-8">
                 @if (!isLast) {
                   <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700" aria-hidden="true"></span>
                 }
@@ -47,9 +47,9 @@ import { AuditLog } from '../../../core/models';
                   <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                     <div>
                       <p class="text-xs text-slate-500 dark:text-slate-400">
-                        @if (log.action === 'TASK_STATUS_CHANGED' && log.metadata?.fromStatus) {
-                          Status changed from <span class="font-medium text-slate-900 dark:text-white">{{ log.metadata.fromStatus }}</span> to
-                          <span class="font-medium text-slate-900 dark:text-white">{{ log.metadata.toStatus }}</span>
+                        @if (log.action === 'TASK_STATUS_CHANGED' && log.metadata?.['fromStatus']) {
+                          Status changed from <span class="font-medium text-slate-900 dark:text-white">{{ log.metadata?.['fromStatus'] }}</span> to
+                          <span class="font-medium text-slate-900 dark:text-white">{{ log.metadata?.['toStatus'] }}</span>
                         } @else if (log.action === 'CREATE') {
                           Task created
                         } @else if (log.action === 'UPDATE') {
@@ -64,8 +64,8 @@ import { AuditLog } from '../../../core/models';
                     </div>
                   </div>
                 </div>
-              </div>
-            </li>
+              </li>
+            }
           </ul>
         </div>
       }
@@ -90,7 +90,7 @@ export class TaskTimelineComponent implements OnInit {
       this.loading.set(true);
       const fetched = await this.taskService.getTaskAuditLogs(this.taskId);
       this.logs.set(fetched);
-    } catch (err) {
+    } catch {
       this.error.set('Failed to load timeline.');
     } finally {
       this.loading.set(false);

@@ -95,7 +95,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
       } @else {
         <!-- Kanban Board Area with Horizontal Scroll on Mobile -->
         <div class="overflow-x-auto pb-6 -mx-4 px-4 lg:overflow-visible lg:pb-0 lg:px-0 snap-x snap-mandatory scroll-pl-4">
-          <div class="flex lg:grid lg:grid-cols-3 gap-4 lg:gap-8 min-w-[max-content] lg:min-w-0" cdkDropListGroup>
+          <div class="flex lg:grid gap-4 lg:gap-8 min-w-[max-content] lg:min-w-0" [ngClass]="showArchived() ? 'lg:grid-cols-4' : 'lg:grid-cols-3'" cdkDropListGroup>
             
             <!-- TODO Column -->
             <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl p-4 lg:p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
@@ -246,6 +246,54 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 }
               </div>
             </div>
+
+            @if (showArchived()) {
+              <!-- ARCHIVED Column -->
+              <div #archivedColumn class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-slate-100/40 dark:bg-slate-900/40 rounded-2xl p-4 lg:p-5 border border-slate-200/50 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
+                 <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
+                  <div class="flex items-center gap-3">
+                    <div class="w-2.5 h-2.5 rounded-full bg-slate-500"></div>
+                    <h2 class="text-sm font-bold text-slate-800 dark:text-slate-400 uppercase tracking-widest">{{ getStatusLabel(statusMap.ARCHIVED) }}</h2>
+                  </div>
+                  <span class="bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs font-bold shadow-sm">{{ archivedTasks().length }}</span>
+                </div>
+                
+                <div
+                  cdkDropList
+                  [cdkDropListData]="archivedTasks()"
+                  (cdkDropListDropped)="drop($event, statusMap.ARCHIVED)"
+                  class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
+                >
+                  @for (task of archivedTasks(); track task.id) {
+                    <div cdkDrag class="bg-gray-100 dark:bg-slate-800/80 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-600 transition-all active:cursor-grabbing group opacity-70 hover:opacity-100">
+                       <div class="flex flex-col gap-2 lg:gap-3">
+                        <div class="flex justify-between items-start">
+                          <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
+                            {{ getCategoryLabel(task.category) }}
+                          </span>
+                        </div>
+                        <h3 class="text-slate-600 dark:text-slate-400 font-bold leading-snug text-sm lg:text-base line-through">{{ task.title }}</h3>
+                        <div class="mt-2">
+                          <app-status-dropdown [task]="task"></app-status-dropdown>
+                        </div>
+                        <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
+                          @if (canEdit()) {
+                            <div class="flex gap-2">
+                              <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-all">
+                                <lucide-icon name="pencil" [size]="14"></lucide-icon>
+                              </button>
+                              <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-all">
+                                <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+                              </button>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
           </div>
         </div>
       }
@@ -294,6 +342,7 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
   public uiState = inject(UiStateService);
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('archivedColumn') archivedContainer?: ElementRef<HTMLDivElement>;
 
   tasks = this.taskService.tasks;
   user = this.authStore.user;
@@ -346,8 +395,10 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
   todoTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.TODO));
   inProgressTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.IN_PROGRESS));
   completedTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.COMPLETED));
+  archivedTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.ARCHIVED));
 
   isModalOpen = signal(false);
+  showArchived = signal(false);
   editingTask = signal<Task | null>(null);
 
   priorities = Object.values(TaskPriority);
@@ -397,12 +448,28 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
       category: 'Global',
       action: () => this.searchInput.nativeElement.focus()
     });
+
+    this.shortcutService.registerShortcut({
+      key: 'a',
+      description: 'Toggle Archived Tasks',
+      category: 'Task Board',
+      action: () => this.toggleArchived()
+    });
   }
 
   resetFilters() {
     this.searchQuery.set('');
     this.categoryFilter.set('all');
     this.sortBy.set('newest');
+  }
+
+  toggleArchived() {
+    this.showArchived.update(v => !v);
+    if (this.showArchived()) {
+      setTimeout(() => {
+        this.archivedContainer?.nativeElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }, 50);
+    }
   }
 
   drop(event: CdkDragDrop<Task[]>, newStatus: TaskStatus) {

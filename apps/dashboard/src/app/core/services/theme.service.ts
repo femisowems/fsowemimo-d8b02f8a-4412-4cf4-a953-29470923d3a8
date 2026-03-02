@@ -29,7 +29,11 @@ export class ThemeService {
         // Initialize from API when settings load (optional but good for persistence)
         this.settingsService.getSettings().subscribe(settings => {
             if (settings?.preferences?.theme) {
-                this.theme.set(settings.preferences.theme as Theme);
+                // Remove unsafe cast by validating the theme value
+                const themeValue = settings.preferences.theme;
+                if (themeValue === 'light' || themeValue === 'dark' || themeValue === 'system') {
+                    this.theme.set(themeValue);
+                }
             }
         });
     }
@@ -57,7 +61,7 @@ export class ThemeService {
     setTheme(theme: Theme) {
         this.theme.set(theme);
         // Persist to API
-        this.settingsService.updatePreferences({ theme } as any).subscribe();
+        this.settingsService.updatePreferences({ theme }).subscribe();
     }
 
     toggleTheme() {

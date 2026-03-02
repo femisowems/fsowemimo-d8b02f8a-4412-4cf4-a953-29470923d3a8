@@ -126,8 +126,8 @@ export class SignupPageComponent implements OnInit {
       const organizationId = crypto.randomUUID();
 
       const { data, error } = await this.supabase.auth.signUp({
-        email: email!,
-        password: password!,
+        email: email as string,
+        password: password as string,
         options: {
           data: {
             organization_id: organizationId,
@@ -145,8 +145,8 @@ export class SignupPageComponent implements OnInit {
       }
 
       this.success.set(true);
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to sign up');
+    } catch (err: unknown) {
+      this.error.set((err as Error).message || 'Failed to sign up');
     } finally {
       this.isLoading.set(false);
     }

@@ -42,14 +42,14 @@ export class TaskService {
 
             this._tasks.set(normalized);
             this._error.set('');
-        } catch (err) {
+        } catch {
             this._error.set('Failed to load tasks');
         } finally {
             this._loading.set(false);
         }
     }
 
-    private normalizeStatus(status: any): TaskStatus {
+    private normalizeStatus(status: unknown): TaskStatus {
         const s = String(status).toLowerCase().replace(' ', '-');
         if (Object.values(TaskStatus).includes(s as TaskStatus)) {
             return s as TaskStatus;
@@ -57,7 +57,7 @@ export class TaskService {
         return TaskStatus.TODO; // Fallback
     }
 
-    private normalizeCategory(category: any): TaskCategory {
+    private normalizeCategory(category: unknown): TaskCategory {
         const c = String(category).toLowerCase();
         if (Object.values(TaskCategory).includes(c as TaskCategory)) {
             return c as TaskCategory;

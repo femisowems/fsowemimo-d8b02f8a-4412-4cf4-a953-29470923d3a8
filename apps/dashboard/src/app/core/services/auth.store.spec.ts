@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 describe('AuthStore', () => {
     let store: AuthStore;
     let httpMock: HttpTestingController;
-    let supabaseMock: any;
+    let supabaseMock: Record<string, unknown>;
 
     const mockUser: User = {
         id: '1',
@@ -27,7 +27,7 @@ describe('AuthStore', () => {
                 onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } }),
                 signOut: jest.fn().mockResolvedValue({ error: null })
             }
-        };
+        } as Record<string, unknown>;
 
         TestBed.configureTestingModule({
             providers: [
@@ -56,7 +56,7 @@ describe('AuthStore', () => {
     it('should fetch profile when session exists', async () => {
         // Re-initialize with session
         const sessionMock = { access_token: 'token123' };
-        supabaseMock.auth.getSession.mockResolvedValueOnce({ data: { session: sessionMock }, error: null });
+        ((supabaseMock as Record<string, unknown>)['auth'] as Record<string, jest.Mock>)['getSession'].mockResolvedValueOnce({ data: { session: sessionMock }, error: null });
 
         // Manual trigger of init for test purposes if needed, 
         // but constructor calls init. In real scenario, we'd mock before inject.
@@ -74,14 +74,14 @@ describe('AuthStore', () => {
 
     it('should handle logout', async () => {
         await store.logout();
-        expect(supabaseMock.auth.signOut).toHaveBeenCalled();
+        expect(((supabaseMock as Record<string, unknown>)['auth'] as Record<string, jest.Mock>)['signOut']).toHaveBeenCalled();
         expect(store.user()).toBeNull();
         expect(store.token()).toBeNull();
     });
 
     it('should update user state locally', () => {
         // Set initial user
-        (store as any)._user.set(mockUser);
+        (store as unknown as { _user: { set: (u: User) => void } })._user.set(mockUser);
 
         store.updateUser({ name: 'Updated Name' });
         expect(store.user()?.name).toBe('Updated Name');

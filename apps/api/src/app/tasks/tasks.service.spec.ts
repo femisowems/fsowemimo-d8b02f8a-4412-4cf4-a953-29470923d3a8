@@ -5,7 +5,7 @@ import { Task, User, AuditLog } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-2947092
 import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
 import { OrgScopeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/org-scope.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ActionType, UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { ActionType, UserRole, TaskStatus } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 describe('TasksService', () => {
@@ -166,13 +166,13 @@ describe('TasksService', () => {
     describe('updateStatus', () => {
         it('should update task status from TODO to IN_PROGRESS (valid)', async () => {
             mockTaskRepo.findOne.mockResolvedValue(mockTask); // status: IN_PROGRESS
-            let initialTask = { ...mockTask, status: 'todo' as any };
+            const initialTask = { ...mockTask, status: 'todo' as unknown as TaskStatus };
             mockTaskRepo.findOne.mockResolvedValue(initialTask);
             rbacService.canUpdateTask.mockResolvedValue(true);
             orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
             mockTaskRepo.save.mockResolvedValue({ ...initialTask, status: 'in-progress' } as Task);
 
-            const result = await service.updateStatus(mockUser, 'task-1', 'in-progress' as any);
+            const result = await service.updateStatus(mockUser, 'task-1', 'in-progress' as unknown as TaskStatus);
 
             expect(result.status).toBe('in-progress');
             expect(eventEmitter.emit).toHaveBeenCalledWith('audit.log', expect.objectContaining({
@@ -183,43 +183,43 @@ describe('TasksService', () => {
         });
 
         it('should throw BadRequestException on invalid transition', async () => {
-            let initialTask = { ...mockTask, status: 'todo' as any };
+            const initialTask = { ...mockTask, status: 'todo' as unknown as TaskStatus };
             mockTaskRepo.findOne.mockResolvedValue(initialTask);
             orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
 
             // todo -> completed is invalid
-            await expect(service.updateStatus(mockUser, 'task-1', 'completed' as any))
+            await expect(service.updateStatus(mockUser, 'task-1', 'completed' as unknown as TaskStatus))
                 .rejects.toThrow();
         });
 
         it('should throw ForbiddenException for VIEWER role', async () => {
-            let initialTask = { ...mockTask, status: 'todo' as any };
+            const initialTask = { ...mockTask, status: 'todo' as unknown as TaskStatus };
             mockTaskRepo.findOne.mockResolvedValue(initialTask);
             orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
             const viewerUser = { ...mockUser, role: UserRole.VIEWER } as User;
 
-            await expect(service.updateStatus(viewerUser, 'task-1', 'in-progress' as any))
+            await expect(service.updateStatus(viewerUser, 'task-1', 'in-progress' as unknown as TaskStatus))
                 .rejects.toThrow(ForbiddenException);
         });
 
         it('should throw ForbiddenException if user cannot update task', async () => {
-            let initialTask = { ...mockTask, status: 'todo' as any };
+            const initialTask = { ...mockTask, status: 'todo' as unknown as TaskStatus };
             mockTaskRepo.findOne.mockResolvedValue(initialTask);
             orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-1']);
             rbacService.canUpdateTask.mockResolvedValue(false); // mock forbidden
 
-            await expect(service.updateStatus(mockUser, 'task-1', 'in-progress' as any))
+            await expect(service.updateStatus(mockUser, 'task-1', 'in-progress' as unknown as TaskStatus))
                 .rejects.toThrow(ForbiddenException);
         });
 
         it('should throw ForbiddenException if cross-org', async () => {
             // Task org is 'org-1', user org is 'org-2' and accessible is 'org-2'
-            let initialTask = { ...mockTask, status: 'todo' as any };
+            const initialTask = { ...mockTask, status: 'todo' as unknown as TaskStatus };
             mockTaskRepo.findOne.mockResolvedValue(initialTask);
             orgScopeService.getAccessibleOrganizationIds.mockResolvedValue(['org-2']);
             const differentOrgUser = { ...mockUser, organizationId: 'org-2' };
 
-            await expect(service.updateStatus(differentOrgUser, 'task-1', 'in-progress' as any))
+            await expect(service.updateStatus(differentOrgUser, 'task-1', 'in-progress' as unknown as TaskStatus))
                 .rejects.toThrow(ForbiddenException);
         });
     });

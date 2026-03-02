@@ -123,16 +123,16 @@ export class LoginPageComponent implements OnInit {
 
       const { email, password } = this.loginForm.value;
       const { error } = await this.supabase.auth.signInWithPassword({
-        email: email!,
-        password: password!
+        email: email as string,
+        password: password as string
       });
 
       if (error) throw error;
 
       // AuthStore will automatically pick up the session change
       this.router.navigate(['/dashboard/tasks']);
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to login');
+    } catch (err: unknown) {
+      this.error.set((err as Error).message || 'Failed to login');
     } finally {
       this.isLoading.set(false);
     }

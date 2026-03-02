@@ -25,7 +25,7 @@ export class AuditController {
     }
 
     @Post()
-    async create(@Req() req: any, @Body() body: { action: string, resourceType?: string, resourceId?: string }) {
+    async create(@Req() req: { user: { id: string } }, @Body() body: { action: string, resourceType?: string, resourceId?: string }) {
         let action: ActionType = ActionType.UPDATE; // Default
 
         // Prioritize incoming resourceType if it's not 'UNKNOWN'

@@ -1,6 +1,6 @@
 
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { TasksModule } from './tasks/tasks.module';
 import { AuditModule } from './audit/audit.module';
@@ -19,14 +19,14 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
             useFactory: () => {
                 const isPostgres = process.env.DATABASE_URL?.startsWith('postgres');
                 return {
-                    type: (isPostgres ? 'postgres' : 'sqlite') as any,
+                    type: (isPostgres ? 'postgres' : 'sqlite') as 'postgres' | 'sqlite',
                     url: isPostgres ? process.env.DATABASE_URL : undefined,
                     database: isPostgres ? undefined : (process.env.DATABASE_URL || 'database.sqlite'),
                     entities: [User, Organization, Task, AuditLog, Permission],
                     synchronize: true, // Only for dev!
                     logging: true,
                     ssl: isPostgres ? { rejectUnauthorized: false } : false,
-                };
+                } as TypeOrmModuleOptions;
             }
         }),
         AuthModule,

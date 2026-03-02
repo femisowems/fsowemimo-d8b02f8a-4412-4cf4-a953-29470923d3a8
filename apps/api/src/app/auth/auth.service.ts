@@ -14,8 +14,8 @@ export class AuthService {
         private orgRepository: Repository<Organization>
     ) { }
 
-    async validateSupabaseUser(payload: any): Promise<any> {
-        const { sub: supabaseUserId, email, user_metadata } = payload;
+    async validateSupabaseUser(payload: Record<string, unknown>): Promise<User> {
+        const { sub: supabaseUserId, email, user_metadata } = payload as { sub: string, email: string, user_metadata?: { role?: UserRole } };
         const role = user_metadata?.role || UserRole.VIEWER;
 
         let user = await this.usersRepository.findOne({ where: { supabaseUserId } });
@@ -52,7 +52,7 @@ export class AuthService {
         return user;
     }
 
-    async getMe(userId: string): Promise<any> {
+    async getMe(userId: string): Promise<User | null> {
         return this.usersRepository.findOne({ where: { id: userId } });
     }
 }

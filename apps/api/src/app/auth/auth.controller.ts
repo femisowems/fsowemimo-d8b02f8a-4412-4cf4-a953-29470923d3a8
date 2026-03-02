@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
     @Get('me')
     @UseGuards(AuthGuard('supabase-jwt'))
-    async getMe(@Req() req: any) {
+    async getMe(@Req() req: { user: unknown }) {
         return req.user;
     }
 }

@@ -9,7 +9,7 @@ export class OrganizationsController {
 
     @Put(':id')
     @UseGuards(AuthGuard('supabase-jwt'))
-    async update(@Param('id') id: string, @Body() updateData: any) {
+    async update(@Param('id') id: string, @Body() updateData: Record<string, unknown>) {
         return this.organizationsService.update(id, updateData);
     }
 

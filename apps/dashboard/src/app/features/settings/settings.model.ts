@@ -1,3 +1,5 @@
+import { SettingsPreferences } from '../../core/models';
+
 export interface SettingsProfile {
     email: string;
     role: string;
@@ -11,12 +13,6 @@ export interface SettingsOrganization {
 export interface SettingsSecurity {
     mfaEnabled: boolean;
     sessionTimeout: number; // minutes
-}
-
-export interface SettingsPreferences {
-    theme: 'light' | 'dark' | 'system';
-    defaultView: 'kanban' | 'list';
-    itemsPerPage: number;
 }
 
 export interface UserSettings {

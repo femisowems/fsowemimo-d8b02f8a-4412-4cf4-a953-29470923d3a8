@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { AuthStore } from '../../core/services/auth.store';
 import { AuditService } from '../../core/services/audit.service';
 import { environment } from '../../../environments/environment';
-import { UserSettings, SettingsProfile, SettingsOrganization, SettingsSecurity, SettingsPreferences } from './settings.model';
+import { UserSettings, SettingsProfile, SettingsOrganization, SettingsSecurity } from './settings.model';
+import { SettingsPreferences } from '../../core/models';
 
 @Injectable({
     providedIn: 'root'
@@ -94,15 +95,16 @@ export class SettingsService {
         );
     }
 
-    updatePreferences(preferences: SettingsPreferences): Observable<SettingsPreferences> {
-        this.preferences = preferences;
+    updatePreferences(partial: Partial<SettingsPreferences>): Observable<SettingsPreferences> {
+        this.preferences = { ...this.preferences, ...partial };
         const user = this.authStore.user();
-        if (!user) return of(preferences);
+        if (!user) return of(this.preferences);
 
-        return this.http.put<SettingsPreferences>(`${environment.apiUrl}/users/${user.id}`, { preferences }).pipe(
+        return this.http.put<SettingsPreferences>(`${environment.apiUrl}/users/${user.id}`, { preferences: this.preferences }).pipe(
             tap(() => {
-                console.log('Preferences Updated:', preferences);
-                this.auditService.logAction('Update Preferences', preferences, 'User', user.id);
+                console.log('Preferences Updated:', this.preferences);
+                this.authStore.updateUser({ preferences: this.preferences });
+                this.auditService.logAction('Update Preferences', partial, 'User', user.id);
             })
         );
     }

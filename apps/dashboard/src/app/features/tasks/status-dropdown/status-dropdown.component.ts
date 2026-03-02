@@ -16,7 +16,7 @@ import { AuthStore } from '../../../core/services/auth.store';
         (ngModelChange)="onStatusChange($event)"
         [disabled]="isDisabled()"
         class="w-full appearance-none pl-3 pr-8 py-1.5 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-        [ngClass]="getStatusColor(task.status)"
+        [ngClass]="getStatusColor()"
       >
         <option [value]="task.status">{{ getStatusLabel(task.status) }} (Current)</option>
         @for (status of allowedStatuses(); track status) {
@@ -80,7 +80,7 @@ export class StatusDropdownComponent {
     return labels[status] || status;
   }
 
-  getStatusColor(status: string): string {
+  getStatusColor(): string {
     const defaultColor = 'bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
     // Simplified specific colors if preferred, but usually Tailwind utility classes should be full strings.
     return defaultColor;
@@ -90,7 +90,7 @@ export class StatusDropdownComponent {
     if (newStatus === this.task.status) return;
     try {
       await this.taskService.patchTaskStatus(this.task.id, newStatus);
-    } catch (e) {
+    } catch {
       // Reverted implicitly by service
     }
   }

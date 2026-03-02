@@ -4,6 +4,12 @@ export enum UserRole {
     VIEWER = 'Viewer',
 }
 
+export interface SettingsPreferences {
+    theme: 'light' | 'dark' | 'system';
+    defaultView: 'kanban' | 'list';
+    itemsPerPage: number;
+}
+
 export interface User {
     id: string;
     email: string;
@@ -12,7 +18,7 @@ export interface User {
     name?: string;
     mfaEnabled?: boolean;
     sessionTimeout?: number;
-    preferences?: any;
+    preferences?: SettingsPreferences;
 }
 
 export enum TaskStatus {
@@ -57,5 +63,5 @@ export interface AuditLog {
     resourceType: string;
     resourceId?: string;
     timestamp: string;
-    metadata?: any;
+    metadata?: Record<string, unknown>;
 }

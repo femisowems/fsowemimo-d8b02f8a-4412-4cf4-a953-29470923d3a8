@@ -34,7 +34,7 @@ describe('UsersService', () => {
         mockUsersRepository.update.mockResolvedValue({ affected: 1 });
         mockUsersRepository.findOne.mockResolvedValue(mockUser);
 
-        const result = await service.updateUser('user-1', { preferences: 'dark' } as any);
+        const result = await service.updateUser('user-1', { preferences: 'dark' } as unknown as Partial<User>);
 
         expect(mockUsersRepository.update).toHaveBeenCalledWith('user-1', { preferences: 'dark' });
         expect(mockUsersRepository.findOne).toHaveBeenCalledWith({ where: { id: 'user-1' } });

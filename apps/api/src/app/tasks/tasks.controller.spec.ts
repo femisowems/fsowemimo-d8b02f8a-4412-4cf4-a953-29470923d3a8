@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { Reflector } from '@nestjs/core';
+import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
+import { PatchTaskStatusDto } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/dtos';
 import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
 
 describe('TasksController', () => {
@@ -41,7 +43,7 @@ describe('TasksController', () => {
         jest.clearAllMocks();
     });
 
-    const mockReq = { user: { id: 'user-1' } };
+    const mockReq = { user: { id: 'user-1' } as unknown as User };
 
     describe('create', () => {
         it('should call tasksService.create', async () => {
@@ -68,7 +70,7 @@ describe('TasksController', () => {
 
     describe('updateStatus', () => {
         it('should call tasksService.updateStatus', async () => {
-            const dto = { status: 'in-progress' as any };
+            const dto = { status: 'in-progress' as unknown as PatchTaskStatusDto['status'] };
             await controller.updateStatus(mockReq, 'task-1', dto);
             expect(service.updateStatus).toHaveBeenCalledWith(mockReq.user, 'task-1', dto.status);
         });

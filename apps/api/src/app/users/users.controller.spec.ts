@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
 
 describe('UsersController', () => {
     let controller: UsersController;
@@ -32,7 +33,7 @@ describe('UsersController', () => {
     it('should update a specific user', async () => {
         const req = { params: { id: 'user-1' } };
         const body = { name: 'Test User' };
-        mockUsersService.updateUser.mockResolvedValue({ id: 'user-1', ...body } as any);
+        mockUsersService.updateUser.mockResolvedValue({ id: 'user-1', ...body } as unknown as User);
 
         const result = await controller.updateUser(req, body);
 
@@ -42,12 +43,12 @@ describe('UsersController', () => {
 
     it('should update preferences for the current user', async () => {
         const req = { user: { id: 'self-user' } };
-        const preferences = 'light';
-        mockUsersService.updateUser.mockResolvedValue({ id: 'self-user', preferences } as any);
+        const preferences = { theme: 'light' };
+        mockUsersService.updateUser.mockResolvedValue({ id: 'self-user', preferences } as unknown as User);
 
         const result = await controller.updatePreferences(req, preferences);
 
         expect(service.updateUser).toHaveBeenCalledWith('self-user', { preferences });
-        expect(result).toEqual({ id: 'self-user', preferences: 'light' });
+        expect(result).toEqual({ id: 'self-user', preferences });
     });
 });

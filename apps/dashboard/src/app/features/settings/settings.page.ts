@@ -5,7 +5,8 @@ import { LucideAngularModule } from 'lucide-angular';
 import { AuthStore } from '../../core/services/auth.store';
 import { UserRole } from '../../core/models';
 import { SettingsService } from './settings.service';
-import { SettingsTab, SettingsPreferences, SettingsProfile, SettingsOrganization } from './settings.model';
+import { SettingsTab, SettingsProfile, SettingsOrganization } from './settings.model';
+import { SettingsPreferences } from '../../core/models';
 import { ThemeService, Theme } from '../../core/services/theme.service';
 
 @Component({

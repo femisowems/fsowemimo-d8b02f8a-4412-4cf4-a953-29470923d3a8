@@ -11,7 +11,7 @@ export class OrganizationsService {
         private organizationsRepository: Repository<Organization>
     ) { }
 
-    async update(id: string, updateData: any) {
+    async update(id: string, updateData: Record<string, unknown>) {
         await this.organizationsRepository.update(id, updateData);
         return this.organizationsRepository.findOne({ where: { id } });
     }

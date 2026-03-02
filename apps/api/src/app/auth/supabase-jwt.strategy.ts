@@ -25,7 +25,7 @@ export class SupabaseJwtStrategy extends PassportStrategy(Strategy, 'supabase-jw
         });
     }
 
-    async validate(payload: any) {
+    async validate(payload: Record<string, unknown>) {
         return this.authService.validateSupabaseUser(payload);
     }
 }
