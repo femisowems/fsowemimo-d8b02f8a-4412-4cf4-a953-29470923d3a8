@@ -81,9 +81,15 @@ export class StatusDropdownComponent {
   }
 
   getStatusColor(): string {
-    const defaultColor = 'bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
-    // Simplified specific colors if preferred, but usually Tailwind utility classes should be full strings.
-    return defaultColor;
+    const colors: Record<TaskStatus, string> = {
+      [TaskStatus.TODO]: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+      [TaskStatus.SCHEDULED]: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/20 dark:text-violet-300 dark:border-violet-800',
+      [TaskStatus.IN_PROGRESS]: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800',
+      [TaskStatus.BLOCKED]: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:border-rose-800',
+      [TaskStatus.COMPLETED]: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-800',
+      [TaskStatus.ARCHIVED]: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
+    };
+    return colors[this.task.status as TaskStatus] || colors[TaskStatus.TODO];
   }
 
   async onStatusChange(newStatus: TaskStatus) {

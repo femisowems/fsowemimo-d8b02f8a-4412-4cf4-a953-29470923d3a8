@@ -38,6 +38,24 @@ import { LucideAngularModule } from 'lucide-angular';
           </div>
         </div>
 
+        <!-- Scheduled -->
+        <div class="space-y-2 lg:space-y-grid-sm">
+          <div class="flex justify-between items-end">
+            <span class="text-sm lg:text-body-sm font-semibold text-text-secondary">Scheduled</span>
+            <span class="text-2xl lg:text-h3 font-bold text-text-primary">{{ stats().scheduled }} <span class="text-xs lg:text-caption font-medium">tasks</span></span>
+          </div>
+          <div class="h-3 lg:h-4 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div 
+              class="h-full bg-violet-500 transition-all duration-700 ease-out"
+              [style.width.%]="getPercentage(stats().scheduled)"
+              role="progressbar"
+              [attr.aria-valuenow]="stats().scheduled"
+              [attr.aria-valuemin]="0"
+              [attr.aria-valuemax]="stats().total"
+            ></div>
+          </div>
+        </div>
+
         <!-- In Progress -->
         <div class="space-y-2 lg:space-y-grid-sm">
           <div class="flex justify-between items-end">
@@ -56,6 +74,24 @@ import { LucideAngularModule } from 'lucide-angular';
           </div>
         </div>
 
+        <!-- Blocked -->
+        <div class="space-y-2 lg:space-y-grid-sm">
+          <div class="flex justify-between items-end">
+            <span class="text-sm lg:text-body-sm font-semibold text-text-secondary">Blocked</span>
+            <span class="text-2xl lg:text-h3 font-bold text-text-primary">{{ stats().blocked }} <span class="text-xs lg:text-caption font-medium">tasks</span></span>
+          </div>
+          <div class="h-3 lg:h-4 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div 
+              class="h-full bg-rose-500 transition-all duration-700 ease-out"
+              [style.width.%]="getPercentage(stats().blocked)"
+              role="progressbar"
+              [attr.aria-valuenow]="stats().blocked"
+              [attr.aria-valuemin]="0"
+              [attr.aria-valuemax]="stats().total"
+            ></div>
+          </div>
+        </div>
+
         <!-- Completed -->
         <div class="space-y-2 lg:space-y-grid-sm">
           <div class="flex justify-between items-end">
@@ -64,10 +100,28 @@ import { LucideAngularModule } from 'lucide-angular';
           </div>
           <div class="h-3 lg:h-4 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <div 
-              class="h-full bg-green-500 transition-all duration-700 ease-out"
+              class="h-full bg-emerald-500 transition-all duration-700 ease-out"
               [style.width.%]="getPercentage(stats().completed)"
               role="progressbar"
               [attr.aria-valuenow]="stats().completed"
+              [attr.aria-valuemin]="0"
+              [attr.aria-valuemax]="stats().total"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Archived -->
+        <div class="space-y-2 lg:space-y-grid-sm">
+          <div class="flex justify-between items-end">
+            <span class="text-sm lg:text-body-sm font-semibold text-text-secondary">Archived</span>
+            <span class="text-2xl lg:text-h3 font-bold text-text-primary">{{ stats().archived }} <span class="text-xs lg:text-caption font-medium">tasks</span></span>
+          </div>
+          <div class="h-3 lg:h-4 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div 
+              class="h-full bg-gray-500 transition-all duration-700 ease-out"
+              [style.width.%]="getPercentage(stats().archived)"
+              role="progressbar"
+              [attr.aria-valuenow]="stats().archived"
               [attr.aria-valuemin]="0"
               [attr.aria-valuemax]="stats().total"
             ></div>
@@ -78,15 +132,27 @@ import { LucideAngularModule } from 'lucide-angular';
       <div class="mt-4 lg:mt-grid-lg pt-4 lg:pt-grid-lg border-t border-border-subtle flex flex-wrap gap-4 lg:gap-grid-md">
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-400"></div>
-          <span class="text-xs lg:text-caption text-text-secondary uppercase tracking-wider font-bold">To Do</span>
+          <span class="text-[10px] lg:text-caption text-text-secondary uppercase tracking-wider font-bold">To Do</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-violet-500"></div>
+          <span class="text-[10px] lg:text-caption text-text-secondary uppercase tracking-wider font-bold">Scheduled</span>
         </div>
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-blue-500"></div>
-          <span class="text-xs lg:text-caption text-text-secondary uppercase tracking-wider font-bold">In Progress</span>
+          <span class="text-[10px] lg:text-caption text-text-secondary uppercase tracking-wider font-bold">In Progress</span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-green-500"></div>
-          <span class="text-xs lg:text-caption text-text-secondary uppercase tracking-wider font-bold">Completed</span>
+          <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-rose-500"></div>
+          <span class="text-[10px] lg:text-caption text-text-secondary uppercase tracking-wider font-bold">Blocked</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-emerald-500"></div>
+          <span class="text-[10px] lg:text-caption text-text-secondary uppercase tracking-wider font-bold">Completed</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-gray-500"></div>
+          <span class="text-[10px] lg:text-caption text-text-secondary uppercase tracking-wider font-bold">Archived</span>
         </div>
       </div>
     </div>

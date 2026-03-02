@@ -93,12 +93,12 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
           <p class="text-slate-500 dark:text-slate-400 font-medium">Loading project board...</p>
         </div>
       } @else {
-        <!-- Kanban Board Area with Horizontal Scroll on Mobile -->
-        <div class="overflow-x-auto pb-6 -mx-4 px-4 lg:overflow-visible lg:pb-0 lg:px-0 snap-x snap-mandatory scroll-pl-4">
-          <div class="flex lg:grid gap-4 lg:gap-8 min-w-[max-content] lg:min-w-0" [ngClass]="showArchived() ? 'lg:grid-cols-4' : 'lg:grid-cols-3'" cdkDropListGroup>
+        <!-- Kanban Board Area with Horizontal Scroll -->
+        <div class="overflow-x-auto pb-6 -mx-4 px-4 snap-x snap-mandatory scroll-pl-4">
+          <div class="flex gap-4 lg:gap-8 min-w-[max-content]" cdkDropListGroup>
             
             <!-- TODO Column -->
-            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl p-4 lg:p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
+            <div class="w-[300px] sm:w-[340px] lg:w-[360px] flex flex-col h-full bg-slate-50/50 dark:bg-slate-800/50 rounded-2xl p-4 lg:p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
               <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                 <div class="flex items-center gap-3">
                   <div class="w-2.5 h-2.5 rounded-full bg-slate-400"></div>
@@ -114,43 +114,35 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
               >
                 @for (task of todoTasks(); track task.id) {
-                  <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-indigo-100 dark:hover:border-indigo-900 transition-all active:cursor-grabbing group">
-                    <div class="flex flex-col gap-2 lg:gap-3">
-                      <div class="flex justify-between items-start">
-                        <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
-                          {{ getCategoryLabel(task.category) }}
-                        </span>
-                        @if (task.priority) {
-                          <span [class]="'text-[10px] font-bold uppercase tracking-wider ' + getPriorityColor(task.priority)">
-                            {{ task.priority }}
-                          </span>
-                        }
-                      </div>
-                      <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ task.title }}</h3>
-                      <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
-                      <div class="mt-2">
-                        <app-status-dropdown [task]="task"></app-status-dropdown>
-                      </div>
-                      <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
-                        @if (canEdit()) {
-                          <div class="flex gap-2">
-                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-lg transition-all">
-                              <lucide-icon name="pencil" [size]="14"></lucide-icon>
-                            </button>
-                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
-                              <lucide-icon name="trash-2" [size]="14"></lucide-icon>
-                            </button>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  </div>
+                  <ng-container *ngTemplateOutlet="taskCard; context: { $implicit: task }"></ng-container>
+                }
+              </div>
+            </div>
+
+            <!-- SCHEDULED Column -->
+            <div class="w-[300px] sm:w-[340px] lg:w-[360px] flex flex-col h-full bg-violet-50/40 dark:bg-violet-900/10 rounded-2xl p-4 lg:p-5 border border-violet-100/50 dark:border-violet-800/30 shadow-sm shrink-0 snap-center">
+               <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
+                <div class="flex items-center gap-3">
+                  <div class="w-2.5 h-2.5 rounded-full bg-violet-500"></div>
+                  <h2 class="text-sm font-bold text-violet-900 dark:text-violet-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.SCHEDULED) }}</h2>
+                </div>
+                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-violet-100 dark:border-violet-900 text-violet-600 dark:text-violet-300 text-xs font-bold shadow-sm">{{ scheduledTasks().length }}</span>
+              </div>
+              
+              <div
+                cdkDropList
+                [cdkDropListData]="scheduledTasks()"
+                (cdkDropListDropped)="drop($event, statusMap.SCHEDULED)"
+                class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
+              >
+                @for (task of scheduledTasks(); track task.id) {
+                  <ng-container *ngTemplateOutlet="taskCard; context: { $implicit: task }"></ng-container>
                 }
               </div>
             </div>
   
             <!-- IN PROGRESS Column -->
-            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-blue-50/40 dark:bg-blue-900/10 rounded-2xl p-4 lg:p-5 border border-blue-100/50 dark:border-blue-800/30 shadow-sm shrink-0 snap-center">
+            <div class="w-[300px] sm:w-[340px] lg:w-[360px] flex flex-col h-full bg-blue-50/40 dark:bg-blue-900/10 rounded-2xl p-4 lg:p-5 border border-blue-100/50 dark:border-blue-800/30 shadow-sm shrink-0 snap-center">
                <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                 <div class="flex items-center gap-3">
                   <div class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></div>
@@ -166,49 +158,41 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
               >
                 @for (task of inProgressTasks(); track task.id) {
-                  <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all active:cursor-grabbing group">
-                     <div class="flex flex-col gap-2 lg:gap-3">
-                      <div class="flex justify-between items-start">
-                        <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
-                          {{ getCategoryLabel(task.category) }}
-                        </span>
-                        @if (task.priority) {
-                          <span [class]="'text-[10px] font-bold uppercase tracking-wider ' + getPriorityColor(task.priority)">
-                            {{ task.priority }}
-                          </span>
-                        }
-                      </div>
-                      <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ task.title }}</h3>
-                      <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
-                      <div class="mt-2">
-                        <app-status-dropdown [task]="task"></app-status-dropdown>
-                      </div>
-                      <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
-                        @if (canEdit()) {
-                          <div class="flex gap-2">
-                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-lg transition-all">
-                              <lucide-icon name="pencil" [size]="14"></lucide-icon>
-                            </button>
-                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
-                              <lucide-icon name="trash-2" [size]="14"></lucide-icon>
-                            </button>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  </div>
+                  <ng-container *ngTemplateOutlet="taskCard; context: { $implicit: task }"></ng-container>
+                }
+              </div>
+            </div>
+
+            <!-- BLOCKED Column -->
+            <div class="w-[300px] sm:w-[340px] lg:w-[360px] flex flex-col h-full bg-rose-50/40 dark:bg-rose-900/10 rounded-2xl p-4 lg:p-5 border border-rose-100/50 dark:border-rose-800/30 shadow-sm shrink-0 snap-center">
+               <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
+                <div class="flex items-center gap-3">
+                  <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                  <h2 class="text-sm font-bold text-rose-900 dark:text-rose-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.BLOCKED) }}</h2>
+                </div>
+                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-rose-100 dark:border-rose-900 text-rose-600 dark:text-rose-300 text-xs font-bold shadow-sm">{{ blockedTasks().length }}</span>
+              </div>
+              
+              <div
+                cdkDropList
+                [cdkDropListData]="blockedTasks()"
+                (cdkDropListDropped)="drop($event, statusMap.BLOCKED)"
+                class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
+              >
+                @for (task of blockedTasks(); track task.id) {
+                  <ng-container *ngTemplateOutlet="taskCard; context: { $implicit: task }"></ng-container>
                 }
               </div>
             </div>
   
             <!-- COMPLETED Column -->
-            <div class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-green-50/40 dark:bg-green-900/10 rounded-2xl p-4 lg:p-5 border border-green-100/50 dark:border-green-800/30 shadow-sm shrink-0 snap-center">
+            <div class="w-[300px] sm:w-[340px] lg:w-[360px] flex flex-col h-full bg-emerald-50/40 dark:bg-emerald-900/10 rounded-2xl p-4 lg:p-5 border border-emerald-100/50 dark:border-emerald-800/30 shadow-sm shrink-0 snap-center">
                <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                 <div class="flex items-center gap-3">
-                  <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                  <h2 class="text-sm font-bold text-green-900 dark:text-green-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.COMPLETED) }}</h2>
+                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                  <h2 class="text-sm font-bold text-emerald-900 dark:text-emerald-300 uppercase tracking-widest">{{ getStatusLabel(statusMap.COMPLETED) }}</h2>
                 </div>
-                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-green-100 dark:border-green-900 text-green-600 dark:text-green-300 text-xs font-bold shadow-sm">{{ completedTasks().length }}</span>
+                <span class="bg-white dark:bg-slate-700 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-900 text-emerald-600 dark:text-emerald-300 text-xs font-bold shadow-sm">{{ completedTasks().length }}</span>
               </div>
               
               <div
@@ -218,41 +202,17 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
               >
                 @for (task of completedTasks(); track task.id) {
-                  <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-green-200 dark:hover:border-green-800 transition-all active:cursor-grabbing group opacity-80 hover:opacity-100">
-                     <div class="flex flex-col gap-2 lg:gap-3">
-                      <div class="flex justify-between items-start">
-                        <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
-                          {{ getCategoryLabel(task.category) }}
-                        </span>
-                      </div>
-                      <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base line-through opacity-50">{{ task.title }}</h3>
-                      <div class="mt-2">
-                        <app-status-dropdown [task]="task"></app-status-dropdown>
-                      </div>
-                      <div class="flex justify-end gap-2 mt-1 lg:mt-2">
-                        @if (canEdit()) {
-                          <div class="flex gap-2">
-                            <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all">
-                              <lucide-icon name="pencil" [size]="14"></lucide-icon>
-                            </button>
-                            <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
-                              <lucide-icon name="trash-2" [size]="14"></lucide-icon>
-                            </button>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  </div>
+                  <ng-container *ngTemplateOutlet="taskCard; context: { $implicit: task, isDone: true }"></ng-container>
                 }
               </div>
             </div>
 
             @if (showArchived()) {
               <!-- ARCHIVED Column -->
-              <div #archivedColumn class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full bg-slate-100/40 dark:bg-slate-900/40 rounded-2xl p-4 lg:p-5 border border-slate-200/50 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
+              <div #archivedColumn class="w-[300px] sm:w-[340px] lg:w-[360px] flex flex-col h-full bg-slate-100/40 dark:bg-slate-900/40 rounded-2xl p-4 lg:p-5 border border-slate-200/50 dark:border-slate-700/50 shadow-sm shrink-0 snap-center">
                  <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
                   <div class="flex items-center gap-3">
-                    <div class="w-2.5 h-2.5 rounded-full bg-slate-500"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-gray-500"></div>
                     <h2 class="text-sm font-bold text-slate-800 dark:text-slate-400 uppercase tracking-widest">{{ getStatusLabel(statusMap.ARCHIVED) }}</h2>
                   </div>
                   <span class="bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs font-bold shadow-sm">{{ archivedTasks().length }}</span>
@@ -265,37 +225,53 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                   class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
                 >
                   @for (task of archivedTasks(); track task.id) {
-                    <div cdkDrag class="bg-gray-100 dark:bg-slate-800/80 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-600 transition-all active:cursor-grabbing group opacity-70 hover:opacity-100">
-                       <div class="flex flex-col gap-2 lg:gap-3">
-                        <div class="flex justify-between items-start">
-                          <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
-                            {{ getCategoryLabel(task.category) }}
-                          </span>
-                        </div>
-                        <h3 class="text-slate-600 dark:text-slate-400 font-bold leading-snug text-sm lg:text-base line-through">{{ task.title }}</h3>
-                        <div class="mt-2">
-                          <app-status-dropdown [task]="task"></app-status-dropdown>
-                        </div>
-                        <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
-                          @if (canEdit()) {
-                            <div class="flex gap-2">
-                              <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-all">
-                                <lucide-icon name="pencil" [size]="14"></lucide-icon>
-                              </button>
-                              <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-all">
-                                <lucide-icon name="trash-2" [size]="14"></lucide-icon>
-                              </button>
-                            </div>
-                          }
-                        </div>
-                      </div>
-                    </div>
+                    <ng-container *ngTemplateOutlet="taskCard; context: { $implicit: task, isArchived: true }"></ng-container>
                   }
                 </div>
               </div>
             }
           </div>
         </div>
+
+        <ng-template #taskCard let-task let-isDone="isDone" let-isArchived="isArchived">
+          <div cdkDrag class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-indigo-100 dark:hover:border-indigo-900 transition-all active:cursor-grabbing group"
+               [ngClass]="{'opacity-80': isDone, 'opacity-70 bg-gray-50 dark:bg-slate-800/80': isArchived}">
+            <div class="flex flex-col gap-2 lg:gap-3">
+              <div class="flex justify-between items-start">
+                <span [class]="'px-2 py-0.5 lg:px-2.5 lg:py-1 text-[10px] font-bold uppercase rounded-md tracking-wider ' + getCategoryClass(task.category)">
+                  {{ getCategoryLabel(task.category) }}
+                </span>
+                @if (task.priority && !isDone && !isArchived) {
+                  <span [class]="'text-[10px] font-bold uppercase tracking-wider ' + getPriorityColor(task.priority)">
+                    {{ task.priority }}
+                  </span>
+                }
+              </div>
+              <h3 class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+                  [ngClass]="{'line-through opacity-50': isDone, 'line-through text-slate-600 dark:text-slate-400': isArchived}">
+                {{ task.title }}
+              </h3>
+              @if (!isDone && !isArchived) {
+                <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm line-clamp-2 leading-relaxed">{{ task.description }}</p>
+              }
+              <div class="mt-2">
+                <app-status-dropdown [task]="task"></app-status-dropdown>
+              </div>
+              <div class="flex justify-end gap-2 mt-1 lg:mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:transform lg:translate-y-1 lg:group-hover:translate-y-0">
+                @if (canEdit()) {
+                  <div class="flex gap-2">
+                    <button (click)="openEdit(task)" class="p-1.5 lg:p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-lg transition-all">
+                      <lucide-icon name="pencil" [size]="14"></lucide-icon>
+                    </button>
+                    <button (click)="deleteTask(task.id)" class="p-1.5 lg:p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-all">
+                      <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </ng-template>
       }
 
       @if (isModalOpen()) {
@@ -393,7 +369,9 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
   });
 
   todoTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.TODO));
+  scheduledTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.SCHEDULED));
   inProgressTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.IN_PROGRESS));
+  blockedTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.BLOCKED));
   completedTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.COMPLETED));
   archivedTasks = computed(() => this.filteredTasks().filter(t => t.status === TaskStatus.ARCHIVED));
 

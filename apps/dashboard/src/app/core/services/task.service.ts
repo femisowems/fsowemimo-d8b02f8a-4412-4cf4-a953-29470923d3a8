@@ -22,8 +22,11 @@ export class TaskService {
         const tasks = this.tasks();
         return {
             todo: tasks.filter(t => t.status === TaskStatus.TODO).length,
+            scheduled: tasks.filter(t => t.status === TaskStatus.SCHEDULED).length,
             inProgress: tasks.filter(t => t.status === TaskStatus.IN_PROGRESS).length,
+            blocked: tasks.filter(t => t.status === TaskStatus.BLOCKED).length,
             completed: tasks.filter(t => t.status === TaskStatus.COMPLETED).length,
+            archived: tasks.filter(t => t.status === TaskStatus.ARCHIVED).length,
             total: tasks.length
         };
     });
