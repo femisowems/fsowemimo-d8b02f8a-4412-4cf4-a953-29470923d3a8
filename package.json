@@ -3,12 +3,17 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start:api": "nx serve api",
-    "start:dashboard": "nx serve dashboard",
+    "start": "npm run dev",
+    "dev": "npx nx run-many -t serve --parallel",
+    "d": "npm run dev",
+    "start:api": "npx nx serve api",
+    "start:dashboard": "npx nx serve dashboard",
     "build:tailwind": "npx @tailwindcss/cli -i ./apps/dashboard/src/styles.css -o ./apps/dashboard/src/tailwind.css",
-    "build": "nx run-many -t build",
-    "test": "nx run-many -t test",
-    "lint": "nx run-many -t lint"
+    "build": "npm run build:tailwind && npx nx run-many -t build",
+    "test": "npx nx run-many -t test",
+    "lint": "npx nx run-many -t lint",
+    "clean": "npx nx reset && rm -rf dist .angular .nx",
+    "format": "npx prettier --write ."
   },
   "private": true,
   "devDependencies": {
@@ -45,6 +50,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
     "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "^8.11.11",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/utils": "^8.40.0",
     "angular-eslint": "^21.0.1",
@@ -103,6 +109,7 @@
     "lucide-angular": "^0.574.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "pg": "^8.13.3",
     "postcss": "^8.5.6",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",

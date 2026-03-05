@@ -5,13 +5,13 @@ import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entit
 
 @Injectable()
 export class UsersService {
-    constructor(
-        @InjectRepository(User)
-        private usersRepository: Repository<User>
-    ) { }
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-    async updateUser(id: string, updateData: Partial<User>) {
-        await this.usersRepository.update(id, updateData);
-        return this.usersRepository.findOne({ where: { id } });
-    }
+  async updateUser(id: string, updateData: Partial<User>) {
+    await this.usersRepository.update(id, updateData);
+    return this.usersRepository.findOne({ where: { id } });
+  }
 }

@@ -3,17 +3,17 @@ import { inject } from '@angular/core';
 import { AuthStore } from '../services/auth.store';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    const authStore = inject(AuthStore);
-    const token = authStore.token();
+  const authStore = inject(AuthStore);
+  const token = authStore.token();
 
-    if (token) {
-        const authReq = req.clone({
-            setHeaders: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return next(authReq);
-    }
+  if (token) {
+    const authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return next(authReq);
+  }
 
-    return next(req);
+  return next(req);
 };

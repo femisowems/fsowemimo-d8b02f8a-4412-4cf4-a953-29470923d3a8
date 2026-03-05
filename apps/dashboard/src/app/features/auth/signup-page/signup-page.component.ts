@@ -11,36 +11,77 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/e
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+    <div
+      class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4"
+    >
       <!-- Auth Card -->
-      <div class="w-full max-w-md bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl p-grid-xl md:p-10 space-y-grid-lg">
+      <div
+        class="w-full max-w-md bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl p-grid-xl md:p-10 space-y-grid-lg"
+      >
         <div class="text-center space-y-grid-xs">
-          <h2 class="text-2xl font-semibold tracking-tight text-slate-900">Create your account</h2>
-          <p class="text-sm text-slate-500">
-            Secure Task Management App
-          </p>
+          <h2 class="text-2xl font-semibold tracking-tight text-slate-900">
+            Create your account
+          </h2>
+          <p class="text-sm text-slate-500">Secure Task Management App</p>
         </div>
-        
-        <form class="space-y-grid-lg" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+        <form
+          class="space-y-grid-lg"
+          [formGroup]="signupForm"
+          (ngSubmit)="onSubmit()"
+        >
           <div class="space-y-grid-md">
             <div class="space-y-grid-xs">
-              <label for="email-address" class="text-sm font-medium text-slate-700">Email address</label>
-              <input formControlName="email" id="email-address" name="email" type="email" autocomplete="email" required 
-                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all" 
+              <label
+                for="email-address"
+                class="text-sm font-medium text-slate-700"
+                >Email address</label
+              >
+              <input
+                formControlName="email"
+                id="email-address"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
                 placeholder="name@example.com"
-                [attr.aria-invalid]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+                [attr.aria-invalid]="
+                  signupForm.get('email')?.invalid &&
+                  signupForm.get('email')?.touched
+                "
+              />
             </div>
             <div class="space-y-grid-xs">
-              <label for="password" class="text-sm font-medium text-slate-700">Password</label>
-              <input formControlName="password" id="password" name="password" type="password" autocomplete="new-password" required 
-                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all" 
+              <label for="password" class="text-sm font-medium text-slate-700"
+                >Password</label
+              >
+              <input
+                formControlName="password"
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                required
+                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
                 placeholder="••••••••"
-                [attr.aria-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+                [attr.aria-invalid]="
+                  signupForm.get('password')?.invalid &&
+                  signupForm.get('password')?.touched
+                "
+              />
             </div>
             <div class="space-y-grid-xs">
-              <label for="role" class="text-sm font-medium text-slate-700">User Role</label>
-              <select formControlName="role" id="role" name="role" required
-                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all bg-white">
+              <label for="role" class="text-sm font-medium text-slate-700"
+                >User Role</label
+              >
+              <select
+                formControlName="role"
+                id="role"
+                name="role"
+                required
+                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all bg-white"
+              >
                 @for (role of roles; track role) {
                   <option [value]="role">{{ role }}</option>
                 }
@@ -49,26 +90,37 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/e
           </div>
 
           @if (error()) {
-            <div class="bg-red-50 border border-red-100 text-red-600 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1">
+            <div
+              class="bg-red-50 border border-red-100 text-red-600 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1"
+            >
               {{ error() }}
             </div>
           }
 
           @if (success()) {
-            <div class="bg-green-50 border border-green-100 text-green-700 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1">
-              Signup successful! Please <a routerLink="/login" class="font-bold underline">sign in</a>.
+            <div
+              class="bg-green-50 border border-green-100 text-green-700 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1"
+            >
+              Signup successful! Please
+              <a routerLink="/login" class="font-bold underline">sign in</a>.
             </div>
           }
 
           <div class="space-y-grid-lg">
-            <button type="submit" [disabled]="isLoading() || success()"
-              class="w-full h-11 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+              type="submit"
+              [disabled]="isLoading() || success()"
+              class="w-full h-11 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               {{ isLoading() ? 'Creating account...' : 'Create Account' }}
             </button>
 
             <p class="text-sm text-slate-600 text-center">
-              Already have an account? 
-              <a routerLink="/login" class="text-indigo-600 hover:underline font-medium transition-colors">
+              Already have an account?
+              <a
+                routerLink="/login"
+                class="text-indigo-600 hover:underline font-medium transition-colors"
+              >
                 Sign in
               </a>
             </p>
@@ -77,9 +129,13 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/e
       </div>
     </div>
   `,
-  styles: [`
-    :host { display: block; }
-  `]
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class SignupPageComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -106,7 +162,7 @@ export class SignupPageComponent implements OnInit {
   signupForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    role: [UserRole.OWNER, [Validators.required]]
+    role: [UserRole.OWNER, [Validators.required]],
   });
 
   isLoading = signal(false);
@@ -131,16 +187,20 @@ export class SignupPageComponent implements OnInit {
         options: {
           data: {
             organization_id: organizationId,
-            role: role // Use selected role
-          }
-        }
+            role: role, // Use selected role
+          },
+        },
       });
 
       if (error) throw error;
 
       // Supabase returns a fake success for existing users if "Prevent user enumeration" is enabled.
       // We can detect this if the returned user has no identities (and email confirmation is on).
-      if (data.user && data.user.identities && data.user.identities.length === 0) {
+      if (
+        data.user &&
+        data.user.identities &&
+        data.user.identities.length === 0
+      ) {
         throw new Error('User already registered');
       }
 

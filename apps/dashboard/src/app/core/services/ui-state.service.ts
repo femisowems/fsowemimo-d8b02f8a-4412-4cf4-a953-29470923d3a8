@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class UiStateService {
-    isSidebarOpen = signal(false);
+  isSidebarOpen = signal(false);
 
-    toggleSidebar() {
-        this.isSidebarOpen.update(isOpen => !isOpen);
-    }
+  toggleSidebar() {
+    this.isSidebarOpen.update((isOpen) => !isOpen);
+  }
 }
