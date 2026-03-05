@@ -1,10 +1,9 @@
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthStore } from '../../core/services/auth.store';
-import { UiStateService } from '../../core/services/ui-state.service';
-import { ThemeService } from '../../core/services/theme.service';
-import { UserRole } from '../../core/models';
+import { AuthStore, UiStateService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
+import { ThemeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

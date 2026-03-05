@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuditService } from '../../../core/services/audit.service';
+import { AuditService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

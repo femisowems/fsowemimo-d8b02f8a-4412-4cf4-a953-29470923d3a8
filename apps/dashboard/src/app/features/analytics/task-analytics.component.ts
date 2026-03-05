@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TaskService } from '../../core/services/task.service';
+import { TaskService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
@@ -159,7 +159,7 @@ import { LucideAngularModule } from 'lucide-angular';
   ],
 })
 export class TaskAnalyticsComponent {
-  private taskService = inject(TaskService);
+  private taskService: TaskService = inject(TaskService);
   stats = this.taskService.taskStats;
 
   getPercentage(value: number): number {

@@ -1,7 +1,6 @@
 import { Injectable, signal, effect, inject } from '@angular/core';
-import { SettingsService } from '../../features/settings/settings.service';
-
-export type Theme = 'light' | 'dark' | 'system';
+import { SettingsService } from './settings.service';
+import { Theme } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 
 @Injectable({
   providedIn: 'root',
@@ -12,14 +11,12 @@ export class ThemeService {
   theme = signal<Theme>(this.getInitialTheme());
 
   constructor() {
-    // Synchronize theme with document and local storage
     effect(() => {
       const currentTheme = this.theme();
       localStorage.setItem('theme-preference', currentTheme);
       this.applyTheme(currentTheme);
     });
 
-    // Listen for system theme changes
     window
       .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', () => {
@@ -28,7 +25,6 @@ export class ThemeService {
         }
       });
 
-    // Initialize from API when settings load (optional but good for persistence)
     this.settingsService.getSettings().subscribe((settings) => {
       if (settings?.preferences?.theme) {
         this.theme.set(settings.preferences.theme as Theme);
@@ -58,7 +54,6 @@ export class ThemeService {
 
   setTheme(theme: Theme) {
     this.theme.set(theme);
-    // Persist to API
     this.settingsService.updatePreferences({ theme } as any).subscribe();
   }
 

@@ -22,10 +22,11 @@ export class KeyboardShortcutsService implements OnDestroy {
   }
 
   private setupGlobalListeners() {
+    if (typeof window === 'undefined') return;
+    
     fromEvent<KeyboardEvent>(window, 'keydown')
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
-        // Don't trigger if typing in an input
         const target = event.target as HTMLElement;
         if (
           target.tagName === 'INPUT' ||
@@ -45,7 +46,6 @@ export class KeyboardShortcutsService implements OnDestroy {
           shortcut.action();
         }
 
-        // Global '?' for help
         if (event.key === '?') {
           this.toggleHelpModal();
         }

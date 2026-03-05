@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { AuthStore } from '../services/auth.store';
+import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { filter, map, take } from 'rxjs/operators';
 

@@ -5,7 +5,7 @@ import { DashboardLayoutComponent } from './layout/dashboard-layout/dashboard-la
 import { TaskListPageComponent } from './features/tasks/task-list-page/task-list-page.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
-import { UserRole } from './core/models';
+import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard/tasks', pathMatch: 'full' },

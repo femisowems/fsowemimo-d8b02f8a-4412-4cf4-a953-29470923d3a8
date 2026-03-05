@@ -1,14 +1,15 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Task, TaskStatus, TaskCategory } from '../models';
-import { environment } from '../../../environments/environment';
+import { Task, TaskStatus, TaskCategory } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 import { firstValueFrom } from 'rxjs';
+import { APP_CONFIG } from './tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
   private http = inject(HttpClient);
+  private config = inject(APP_CONFIG);
 
   private _tasks = signal<Task[]>([]);
   private _loading = signal<boolean>(false);
@@ -33,7 +34,7 @@ export class TaskService {
     try {
       this._loading.set(true);
       const res = await firstValueFrom(
-        this.http.get<Task[]>(`${environment.apiUrl}/tasks`),
+        this.http.get<Task[]>(`${this.config.apiUrl}/tasks`),
       );
 
       // Normalize data to handle case-sensitivity or legacy values
@@ -41,7 +42,7 @@ export class TaskService {
         ...task,
         status: this.normalizeStatus(task.status),
         category: this.normalizeCategory(task.category),
-      }));
+      })) as Task[];
 
       this._tasks.set(normalized);
       this._error.set('');
@@ -69,19 +70,19 @@ export class TaskService {
   }
 
   async createTask(data: Partial<Task>) {
-    await firstValueFrom(this.http.post(`${environment.apiUrl}/tasks`, data));
+    await firstValueFrom(this.http.post(`${this.config.apiUrl}/tasks`, data));
     await this.fetchTasks();
   }
 
   async updateTask(id: string, data: Partial<Task>) {
     await firstValueFrom(
-      this.http.put(`${environment.apiUrl}/tasks/${id}`, data),
+      this.http.put(`${this.config.apiUrl}/tasks/${id}`, data),
     );
     await this.fetchTasks();
   }
 
   async deleteTask(id: string) {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/tasks/${id}`));
+    await firstValueFrom(this.http.delete(`${this.config.apiUrl}/tasks/${id}`));
     await this.fetchTasks();
   }
 }

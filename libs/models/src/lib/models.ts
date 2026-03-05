@@ -55,3 +55,14 @@ export interface AuditLog {
   resourceId?: string;
   timestamp: string;
 }
+
+export interface SupabaseConfig {
+  url: string;
+  key: string;
+}
+
+export interface AppConfig {
+  production: boolean;
+  supabase: SupabaseConfig;
+  apiUrl: string;
+}

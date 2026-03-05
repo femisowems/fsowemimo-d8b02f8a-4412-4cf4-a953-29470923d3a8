@@ -1,9 +1,8 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { SupabaseService } from './supabase.service';
-import { User } from '../models';
-import { environment } from '../../../environments/environment';
+import { SupabaseService, APP_CONFIG } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
@@ -13,6 +12,7 @@ export class AuthStore {
   private supabase = inject(SupabaseService);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private config = inject(APP_CONFIG);
 
   private _user = signal<User | null>(null);
   private _loading = signal<boolean>(true);
@@ -28,7 +28,6 @@ export class AuthStore {
   }
 
   private async init() {
-    // Handle initial session
     const {
       data: { session },
     } = await this.supabase.auth.getSession();
@@ -40,8 +39,7 @@ export class AuthStore {
       this._loading.set(false);
     }
 
-    // Listen for auth changes
-    this.supabase.auth.onAuthStateChange(async (event, session) => {
+    this.supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       this._token.set(session?.access_token || null);
       if (session) {
         await this.fetchProfile();
@@ -56,7 +54,7 @@ export class AuthStore {
     try {
       this._loading.set(true);
       const profile = await firstValueFrom(
-        this.http.get<User>(`${environment.apiUrl}/auth/me`),
+        this.http.get<User>(`${this.config.apiUrl}/auth/me`),
       );
       this._user.set(profile);
     } catch (error) {

@@ -2,9 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { AuthStore } from '../../core/services/auth.store';
-import { AuditService } from '../../core/services/audit.service';
-import { environment } from '../../../environments/environment';
+import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
+import { AuditService, APP_CONFIG } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
 import {
   UserSettings,
   SettingsProfile,
@@ -17,9 +16,10 @@ import {
   providedIn: 'root',
 })
 export class SettingsService {
-  private authStore = inject(AuthStore);
-  private auditService = inject(AuditService);
+  private authStore: AuthStore = inject(AuthStore);
+  private auditService: AuditService = inject(AuditService);
   private http = inject(HttpClient);
+  private config = inject(APP_CONFIG);
 
   // Mock initial data for preferences and security (since not in User model)
   private security: SettingsSecurity = {
@@ -72,7 +72,7 @@ export class SettingsService {
     const user = this.authStore.user();
     if (!user) return of(profile);
     return this.http
-      .put<SettingsProfile>(`${environment.apiUrl}/users/${user.id}`, {
+      .put<SettingsProfile>(`${this.config.apiUrl}/users/${user.id}`, {
         name: profile.name,
       })
       .pipe(
@@ -101,7 +101,7 @@ export class SettingsService {
     if (!user) return of(security);
 
     return this.http
-      .put<SettingsSecurity>(`${environment.apiUrl}/users/${user.id}`, {
+      .put<SettingsSecurity>(`${this.config.apiUrl}/users/${user.id}`, {
         mfaEnabled: security.mfaEnabled,
         sessionTimeout: security.sessionTimeout,
       })
@@ -126,7 +126,7 @@ export class SettingsService {
     if (!user) return of(preferences);
 
     return this.http
-      .put<SettingsPreferences>(`${environment.apiUrl}/users/${user.id}`, {
+      .put<SettingsPreferences>(`${this.config.apiUrl}/users/${user.id}`, {
         preferences,
       })
       .pipe(

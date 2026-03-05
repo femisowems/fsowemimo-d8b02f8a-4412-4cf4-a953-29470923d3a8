@@ -7,8 +7,8 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { AuthStore } from '../../core/services/auth.store';
-import { UserRole } from '../../core/models';
+import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
+import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 import { SettingsService } from './settings.service';
 import {
   SettingsTab,
@@ -16,7 +16,7 @@ import {
   SettingsProfile,
   SettingsOrganization,
 } from './settings.model';
-import { ThemeService, Theme } from '../../core/services/theme.service';
+import { ThemeService, Theme } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
 
 @Component({
   selector: 'app-settings-page',
@@ -427,8 +427,8 @@ import { ThemeService, Theme } from '../../core/services/theme.service';
 export class SettingsPage implements OnInit {
   private fb = inject(FormBuilder);
   private settingsService = inject(SettingsService);
-  private authStore = inject(AuthStore);
-  private themeService = inject(ThemeService);
+  private authStore: AuthStore = inject(AuthStore);
+  private themeService: ThemeService = inject(ThemeService);
 
   // State Signals
   activeTab = signal<SettingsTab>('profile');
