@@ -12,10 +12,10 @@ import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="w-[300px] sm:w-[340px] lg:w-auto flex flex-col h-full rounded-2xl p-4 lg:p-5 border shadow-sm shrink-0 snap-center"
+      class="w-[360px] flex flex-col h-full rounded-2xl p-4 border shadow-sm shrink-0 snap-center"
       [ngClass]="containerClass"
     >
-      <div class="flex items-center justify-between mb-4 lg:mb-6 px-1">
+      <div class="flex items-center justify-between mb-4 px-1">
         <div class="flex items-center gap-3">
           <div [class]="'w-2.5 h-2.5 rounded-full ' + dotClass"></div>
           <h2
@@ -34,7 +34,7 @@ import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953
         cdkDropList
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="onDrop($event)"
-        class="flex-1 space-y-3 lg:space-y-4 min-h-[500px]"
+        class="flex-1 space-y-3 overflow-y-auto min-h-[500px] pr-2"
       >
         @for (task of tasks; track task.id) {
           <app-task-card

@@ -6,6 +6,8 @@ import {
   computed,
   ChangeDetectionStrategy,
   OnDestroy,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -151,20 +153,23 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
                 (taskDelete)="deleteTask($event)"
               ></app-task-column>
 
-              <app-task-column
-                [title]="getStatusLabel(TaskStatus.ARCHIVED)"
-                [status]="TaskStatus.ARCHIVED"
-                [tasks]="archivedTasks()"
-                [canEdit]="canEdit()"
-                containerClass="bg-slate-100/40 dark:bg-slate-900/10 border-slate-200/50 dark:border-slate-800/30"
-                dotClass="bg-slate-500"
-                titleClass="text-slate-900 dark:text-slate-300"
-                countClass="border-slate-200 dark:border-slate-900 text-slate-600 dark:text-slate-300"
-                (drop)="drop($event, TaskStatus.ARCHIVED)"
-                (edit)="openEdit($event)"
-                (duplicate)="handleDuplicate($event)"
-                (taskDelete)="deleteTask($event)"
-              ></app-task-column>
+              @if (showArchived()) {
+                <app-task-column
+                  #archivedContainer
+                  [title]="getStatusLabel(TaskStatus.ARCHIVED)"
+                  [status]="TaskStatus.ARCHIVED"
+                  [tasks]="archivedTasks()"
+                  [canEdit]="canEdit()"
+                  containerClass="bg-slate-100/40 dark:bg-slate-900/10 border-slate-200/50 dark:border-slate-800/30"
+                  dotClass="bg-slate-500"
+                  titleClass="text-slate-900 dark:text-slate-300"
+                  countClass="border-slate-200 dark:border-slate-900 text-slate-600 dark:text-slate-300"
+                  (drop)="drop($event, TaskStatus.ARCHIVED)"
+                  (edit)="openEdit($event)"
+                  (duplicate)="handleDuplicate($event)"
+                  (taskDelete)="deleteTask($event)"
+                ></app-task-column>
+              }
             </div>
           </div>
         }
@@ -221,6 +226,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
   ],
 })
 export class TaskListPageComponent implements OnInit, OnDestroy {
+  @ViewChild('archivedContainer') archivedContainer?: ElementRef<HTMLDivElement>;
   public taskService = inject(TaskService);
   private authStore = inject(AuthStore);
   public shortcutService = inject(KeyboardShortcutsService);
@@ -297,6 +303,7 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
   isModalOpen = signal(false);
   editingTask = signal<Task | null>(null);
   TaskStatus = TaskStatus;
+  showArchived = signal(false);
 
   priorities = Object.values(TaskPriority);
 
@@ -338,6 +345,22 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
       category: 'Global',
       action: () => this.openCreate(),
     });
+
+    this.shortcutService.registerShortcut({
+      key: 'a',
+      description: 'Toggle Archived Tasks',
+      category: 'Global',
+      action: () => this.toggleArchived(),
+    });
+  }
+
+  toggleArchived() {
+    this.showArchived.update(v => !v);
+    if (this.showArchived()) {
+      setTimeout(() => {
+        this.archivedContainer?.nativeElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }, 50);
+    }
   }
 
   resetFilters() {
