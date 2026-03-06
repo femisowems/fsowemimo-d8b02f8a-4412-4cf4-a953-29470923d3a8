@@ -57,6 +57,17 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
           (create)="openCreate()"
         ></app-task-header>
 
+        @if (taskService.isSaving()) {
+          <div class="flex items-center justify-end">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 text-xs font-semibold"
+            >
+              <span class="h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
+              Saving...
+            </div>
+          </div>
+        }
+
         <app-task-analytics></app-task-analytics>
 
         @if (shortcutService.isModalOpen()) {

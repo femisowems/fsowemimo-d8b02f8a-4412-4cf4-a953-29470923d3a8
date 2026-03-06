@@ -13,10 +13,12 @@ export class TaskService {
 
   private _tasks = signal<Task[]>([]);
   private _loading = signal<boolean>(false);
+  private _savingOps = signal<number>(0);
   private _error = signal<string>('');
 
   tasks = this._tasks.asReadonly();
   isLoading = this._loading.asReadonly();
+  isSaving = computed(() => this._savingOps() > 0);
   error = this._error.asReadonly();
 
   todoTasks = computed(() => this.tasks().filter(t => t.status === TaskStatus.TODO));
@@ -39,9 +41,12 @@ export class TaskService {
     };
   });
 
-  async fetchTasks() {
+  async fetchTasks(options?: { silent?: boolean }) {
+    const silent = options?.silent ?? false;
     try {
-      this._loading.set(true);
+      if (!silent) {
+        this._loading.set(true);
+      }
       const res = await firstValueFrom(
         this.http.get<Task[]>(`${this.config.apiUrl}/tasks`),
       );
@@ -58,7 +63,9 @@ export class TaskService {
     } catch (err) {
       this._error.set('Failed to load tasks');
     } finally {
-      this._loading.set(false);
+      if (!silent) {
+        this._loading.set(false);
+      }
     }
   }
 
@@ -79,19 +86,34 @@ export class TaskService {
   }
 
   async createTask(data: Partial<Task>) {
-    await firstValueFrom(this.http.post(`${this.config.apiUrl}/tasks`, data));
-    await this.fetchTasks();
+    this._savingOps.update((n) => n + 1);
+    try {
+      await firstValueFrom(this.http.post(`${this.config.apiUrl}/tasks`, data));
+      await this.fetchTasks({ silent: true });
+    } finally {
+      this._savingOps.update((n) => Math.max(0, n - 1));
+    }
   }
 
   async updateTask(id: string, data: Partial<Task>) {
-    await firstValueFrom(
-      this.http.put(`${this.config.apiUrl}/tasks/${id}`, data),
-    );
-    await this.fetchTasks();
+    this._savingOps.update((n) => n + 1);
+    try {
+      await firstValueFrom(
+        this.http.put(`${this.config.apiUrl}/tasks/${id}`, data),
+      );
+      await this.fetchTasks({ silent: true });
+    } finally {
+      this._savingOps.update((n) => Math.max(0, n - 1));
+    }
   }
 
   async deleteTask(id: string) {
-    await firstValueFrom(this.http.delete(`${this.config.apiUrl}/tasks/${id}`));
-    await this.fetchTasks();
+    this._savingOps.update((n) => n + 1);
+    try {
+      await firstValueFrom(this.http.delete(`${this.config.apiUrl}/tasks/${id}`));
+      await this.fetchTasks({ silent: true });
+    } finally {
+      this._savingOps.update((n) => Math.max(0, n - 1));
+    }
   }
 }
