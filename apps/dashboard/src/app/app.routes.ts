@@ -44,6 +44,14 @@ export const routes: Routes = [
         canActivate: [roleGuard([UserRole.ADMIN, UserRole.OWNER])],
       },
       {
+        path: 'users',
+        loadComponent: () =>
+          import(
+            './features/users/user-management-page.component'
+          ).then((m) => m.UserManagementPageComponent),
+        canActivate: [roleGuard([UserRole.ADMIN])],
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./features/settings/settings.page').then(

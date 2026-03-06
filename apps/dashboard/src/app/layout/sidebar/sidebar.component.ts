@@ -50,6 +50,18 @@ import { LucideAngularModule } from 'lucide-angular';
           Tasks
         </a>
 
+        @if (isAdmin()) {
+          <a
+            routerLink="/dashboard/users"
+            (click)="closeSidebar()"
+            routerLinkActive="bg-indigo-50 text-indigo-700 font-bold"
+            class="flex items-center gap-grid-sm px-grid-md py-grid-sm rounded-md transition-colors text-text-secondary hover:bg-gray-50 hover:text-text-primary text-body-sm font-medium"
+          >
+            <lucide-icon name="users" [size]="18"></lucide-icon>
+            User Management
+          </a>
+        }
+
         @if (isAdminOrOwner()) {
           <a
             routerLink="/dashboard/audit"
@@ -110,6 +122,7 @@ export class SidebarComponent {
 
   user = this.authStore.user;
   role = computed(() => this.user()?.role || '');
+  isAdmin = computed(() => this.role() === UserRole.ADMIN);
   isAdminOrOwner = computed(() => {
     const r = this.role();
     return r === UserRole.ADMIN || r === UserRole.OWNER;

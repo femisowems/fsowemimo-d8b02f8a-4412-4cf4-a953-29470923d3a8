@@ -1,7 +1,10 @@
 import {
   Controller,
+  Get,
+  Post,
   Put,
   Patch,
+  Delete,
   Body,
   UseGuards,
   Req,
@@ -9,12 +12,20 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
+import { Roles } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.decorator';
 import { UsersService } from './users.service';
 import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ActionType } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
 
 @Controller('users')
+@UseGuards(AuthGuard('supabase-jwt'))
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   @Put(':id')
   @UseGuards(AuthGuard('supabase-jwt'))
@@ -36,8 +47,72 @@ export class UsersController {
   }
 
   @Patch('preferences')
-  @UseGuards(AuthGuard('supabase-jwt'))
   async updatePreferences(@Req() req: any, @Body() preferences: any) {
     return this.usersService.updateUser(req.user.id, { preferences });
+  }
+
+  // ========== ADMIN-ONLY ENDPOINTS ==========
+
+  @Get()
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async listUsers(@Req() req: any) {
+    this.eventEmitter.emit('audit.log', {
+      userId: req.user.id,
+      action: ActionType.READ,
+      resourceType: 'User',
+      resourceId: 'list',
+    });
+    return this.usersService.listUsers(req.user);
+  }
+
+  @Post()
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async createUser(@Req() req: any, @Body() userData: any) {
+    const newUser = await this.usersService.createUser(req.user, userData);
+    this.eventEmitter.emit('audit.log', {
+      userId: req.user.id,
+      action: ActionType.CREATE,
+      resourceType: 'User',
+      resourceId: newUser.id,
+    });
+    return newUser;
+  }
+
+  @Patch(':id/role')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async updateUserRole(
+    @Req() req: any,
+    @Param('id') userId: string,
+    @Body() body: { role: UserRole },
+  ) {
+    const updated = await this.usersService.updateUserRole(
+      req.user,
+      userId,
+      body.role,
+    );
+    this.eventEmitter.emit('audit.log', {
+      userId: req.user.id,
+      action: ActionType.UPDATE,
+      resourceType: 'User',
+      resourceId: userId,
+    });
+    return updated;
+  }
+
+  @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async deleteUser(@Req() req: any, @Param('id') userId: string) {
+    await this.usersService.deleteUser(req.user, userId);
+    this.eventEmitter.emit('audit.log', {
+      userId: req.user.id,
+      action: ActionType.DELETE,
+      resourceType: 'User',
+      resourceId: userId,
+    });
+    return { success: true };
   }
 }

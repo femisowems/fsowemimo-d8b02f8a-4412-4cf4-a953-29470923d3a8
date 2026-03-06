@@ -25,6 +25,9 @@ import {
   Copy,
   BarChart3,
   ChevronDown,
+  UserPlus,
+  Users,
+  ShieldCheck,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -66,6 +69,9 @@ export const appConfig: ApplicationConfig = {
         Copy,
         BarChart3,
         ChevronDown,
+        UserPlus,
+        Users,
+        ShieldCheck,
       }),
     },
   ],
