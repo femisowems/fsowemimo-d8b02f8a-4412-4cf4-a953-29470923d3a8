@@ -55,6 +55,7 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
           (searchQueryChange)="searchQuery.set($event)"
           (categoryFilterChange)="categoryFilter.set($event)"
           (create)="openCreate()"
+          (columnGuide)="toggleColumnGuideModal()"
         ></app-task-header>
 
         @if (taskService.isSaving()) {
@@ -72,6 +73,65 @@ type SortOption = 'newest' | 'oldest' | 'priority' | 'title';
 
         @if (shortcutService.isModalOpen()) {
           <app-shortcuts-modal></app-shortcuts-modal>
+        }
+
+        @if (isColumnGuideModalOpen()) {
+          <div
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[100]"
+            (click)="toggleColumnGuideModal()"
+            (keydown.escape)="toggleColumnGuideModal()"
+            tabindex="0"
+          >
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-2xl p-6 lg:p-8 relative shadow-2xl border border-slate-200 dark:border-slate-700 animate-in zoom-in duration-200"
+              (click)="$event.stopPropagation()"
+            >
+              <button
+                (click)="toggleColumnGuideModal()"
+                class="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all"
+              >
+                <lucide-icon name="x" [size]="20"></lucide-icon>
+              </button>
+
+              <div class="mb-5">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Column Guide</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  Quick definitions for each board status.
+                </p>
+              </div>
+
+              <div class="grid gap-3 text-sm">
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                  <p class="font-semibold text-slate-900 dark:text-slate-100">To Do</p>
+                  <p class="text-slate-600 dark:text-slate-300">New tasks that are not started yet.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                  <p class="font-semibold text-slate-900 dark:text-slate-100">Scheduled</p>
+                  <p class="text-slate-600 dark:text-slate-300">Planned tasks with a target sequence or upcoming execution window.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                  <p class="font-semibold text-slate-900 dark:text-slate-100">In Progress</p>
+                  <p class="text-slate-600 dark:text-slate-300">Tasks currently being actively worked on.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                  <p class="font-semibold text-slate-900 dark:text-slate-100">Blocked</p>
+                  <p class="text-slate-600 dark:text-slate-300">Tasks paused by dependencies, reviews, or external blockers.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                  <p class="font-semibold text-slate-900 dark:text-slate-100">Completed</p>
+                  <p class="text-slate-600 dark:text-slate-300">Finished tasks ready for closure and reporting.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                  <p class="font-semibold text-slate-900 dark:text-slate-100">Archived</p>
+                  <p class="text-slate-600 dark:text-slate-300">Closed historical tasks retained for audit and reference.</p>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+                Press <kbd class="px-1 py-0.5 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">!</kbd> or <kbd class="px-1 py-0.5 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">Esc</kbd> to close.
+              </div>
+            </div>
+          </div>
         }
 
         @if (taskService.isLoading()) {
@@ -315,6 +375,7 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
   editingTask = signal<Task | null>(null);
   TaskStatus = TaskStatus;
   showArchived = signal(false);
+  isColumnGuideModalOpen = signal(false);
 
   priorities = Object.values(TaskPriority);
 
@@ -363,6 +424,17 @@ export class TaskListPageComponent implements OnInit, OnDestroy {
       category: 'Global',
       action: () => this.toggleArchived(),
     });
+
+    this.shortcutService.registerShortcut({
+      key: '!',
+      description: 'Open Column Guide',
+      category: 'Global',
+      action: () => this.toggleColumnGuideModal(),
+    });
+  }
+
+  toggleColumnGuideModal() {
+    this.isColumnGuideModalOpen.update((v) => !v);
   }
 
   toggleArchived() {

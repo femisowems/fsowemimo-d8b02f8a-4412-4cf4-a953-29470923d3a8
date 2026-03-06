@@ -91,13 +91,22 @@ import { TaskCategory } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/mo
         </div>
 
         <div
-          class="hidden lg:flex items-center gap-1.5 px-3 h-11 bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-400 text-xs font-mono"
+          class="hidden lg:flex items-center gap-2 px-3 h-11 bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-400 text-xs font-mono"
         >
           <span>Shortcut:</span>
           <kbd
             class="px-1.5 py-0.5 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded shadow-sm font-bold text-slate-600 dark:text-slate-300"
           >?</kbd
           >
+          <button
+            type="button"
+            (click)="columnGuide.emit()"
+            class="px-1.5 py-0.5 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded shadow-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+            title="Explain status columns"
+            aria-label="Explain status columns"
+          >
+            !
+          </button>
         </div>
       </div>
     </div>
@@ -115,6 +124,7 @@ export class TaskHeaderComponent {
   @Output() searchQueryChange = new EventEmitter<string>();
   @Output() categoryFilterChange = new EventEmitter<TaskCategory | 'all'>();
   @Output() create = new EventEmitter<void>();
+  @Output() columnGuide = new EventEmitter<void>();
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 

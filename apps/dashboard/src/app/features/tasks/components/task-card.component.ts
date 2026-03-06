@@ -12,14 +12,14 @@ import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953
   template: `
     <div
       class="bg-white dark:bg-slate-800 p-4 lg:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-grab hover:shadow-lg hover:border-indigo-100 dark:hover:border-indigo-900 transition-all active:cursor-grabbing group"
-      [class.opacity-80]="task.status === TaskStatus.COMPLETED"
+      [class.opacity-80]="task.status === TaskStatus.COMPLETED || task.status === TaskStatus.ARCHIVED"
     >
       <div class="flex flex-col gap-2 lg:gap-3">
         <div class="flex items-start justify-between mb-4">
           <app-badge [variant]="getCategoryVariant(task.category)">
             {{ task.category }}
           </app-badge>
-          @if (task.priority && task.status !== TaskStatus.COMPLETED) {
+          @if (task.priority && task.status !== TaskStatus.COMPLETED && task.status !== TaskStatus.ARCHIVED) {
             <span
               [class]="'text-[10px] font-bold uppercase tracking-wider ' + getPriorityColor(task.priority)"
             >
@@ -29,8 +29,8 @@ import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953
         </div>
         <h3
           class="text-slate-900 dark:text-white font-bold leading-snug text-sm lg:text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
-          [class.line-through]="task.status === TaskStatus.COMPLETED"
-          [class.opacity-50]="task.status === TaskStatus.COMPLETED"
+          [class.line-through]="task.status === TaskStatus.COMPLETED || task.status === TaskStatus.ARCHIVED"
+          [class.opacity-50]="task.status === TaskStatus.COMPLETED || task.status === TaskStatus.ARCHIVED"
         >
           {{ task.title }}
         </h3>
