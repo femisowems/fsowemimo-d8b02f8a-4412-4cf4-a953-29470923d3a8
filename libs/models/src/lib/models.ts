@@ -9,6 +9,8 @@ export interface User {
   email: string;
   role: UserRole;
   organizationId: string;
+  emailVerified?: boolean;
+  verifiedAt?: string | null;
   name?: string;
   mfaEnabled?: boolean;
   sessionTimeout?: number;

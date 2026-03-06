@@ -10,6 +10,8 @@ export interface OrgUser {
   name?: string;
   role: UserRole;
   organizationId: string;
+  emailVerified: boolean;
+  verifiedAt?: string | null;
   mfaEnabled: boolean;
   createdAt: string;
 }
@@ -58,6 +60,34 @@ export class UserManagementService {
   updateUserRole(userId: string, role: UserRole): Observable<OrgUser> {
     return this.http
       .patch<OrgUser>(`${this.apiUrl}/${userId}/role`, { role })
+      .pipe(
+        tap({
+          next: (updated) => {
+            this.users.update((users) =>
+              users.map((u) => (u.id === userId ? updated : u)),
+            );
+          },
+        }),
+      );
+  }
+
+  updateUserName(userId: string, name: string): Observable<OrgUser> {
+    return this.http
+      .patch<OrgUser>(`${this.apiUrl}/${userId}/name`, { name })
+      .pipe(
+        tap({
+          next: (updated) => {
+            this.users.update((users) =>
+              users.map((u) => (u.id === userId ? updated : u)),
+            );
+          },
+        }),
+      );
+  }
+
+  setUserVerification(userId: string, verified = true): Observable<OrgUser> {
+    return this.http
+      .patch<OrgUser>(`${this.apiUrl}/${userId}/verify`, { verified })
       .pipe(
         tap({
           next: (updated) => {

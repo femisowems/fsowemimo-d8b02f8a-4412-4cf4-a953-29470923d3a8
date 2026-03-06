@@ -143,7 +143,7 @@ export class SignupPageComponent implements OnInit {
   private supabase = inject(SupabaseService);
   private router = inject(Router);
 
-  roles = Object.values(UserRole);
+  roles = [UserRole.OWNER, UserRole.VIEWER];
 
   constructor() {
     effect(() => {

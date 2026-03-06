@@ -28,6 +28,7 @@ import {
   UserPlus,
   Users,
   ShieldCheck,
+  MoreVertical,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -72,6 +73,7 @@ export const appConfig: ApplicationConfig = {
         UserPlus,
         Users,
         ShieldCheck,
+        MoreVertical,
       }),
     },
   ],

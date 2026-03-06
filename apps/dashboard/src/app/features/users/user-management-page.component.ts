@@ -66,6 +66,9 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
                     MFA
                   </th>
                   <th class="px-grid-lg py-grid-md text-left text-caption font-bold text-text-secondary uppercase tracking-wider">
+                    Verification
+                  </th>
+                  <th class="px-grid-lg py-grid-md text-left text-caption font-bold text-text-secondary uppercase tracking-wider">
                     Created
                   </th>
                   <th class="px-grid-lg py-grid-md text-right text-caption font-bold text-text-secondary uppercase tracking-wider">
@@ -117,48 +120,65 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
                         <span class="text-text-secondary text-xs">Disabled</span>
                       }
                     </td>
+                    <td class="px-grid-lg py-grid-md">
+                      <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        [ngClass]="getVerificationBadgeClass(user.emailVerified)"
+                      >
+                        {{ user.emailVerified ? 'Verified' : 'Pending' }}
+                      </span>
+                    </td>
                     <td class="px-grid-lg py-grid-md text-body-sm text-text-secondary">
                       {{ user.createdAt | date: 'short' }}
                     </td>
                     <td class="px-grid-lg py-grid-md text-right">
-                      <div class="inline-flex items-center gap-2">
-                        @if (editingUserId() === user.id) {
-                          <button
-                            type="button"
-                            (click)="saveRoleChange(user.id)"
-                            [disabled]="isSavingRole()"
-                            class="p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/50 rounded-lg transition-colors disabled:opacity-50"
-                            title="Save"
-                          >
-                            <lucide-icon name="check" [size]="16" aria-hidden="true"></lucide-icon>
-                          </button>
-                          <button
-                            type="button"
-                            (click)="cancelRoleEdit()"
-                            class="p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                            title="Cancel"
-                          >
-                            <lucide-icon name="x" [size]="16" aria-hidden="true"></lucide-icon>
-                          </button>
-                        } @else {
-                          <button
-                            type="button"
-                            (click)="startRoleEdit(user)"
-                            [disabled]="user.id === currentUserId()"
-                            class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                            title="Edit Role"
-                          >
-                            <lucide-icon name="pencil" [size]="16" aria-hidden="true"></lucide-icon>
-                          </button>
-                          <button
-                            type="button"
-                            (click)="confirmDelete(user)"
-                            [disabled]="user.id === currentUserId()"
-                            class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                            title="Delete User"
-                          >
-                            <lucide-icon name="trash-2" [size]="16" aria-hidden="true"></lucide-icon>
-                          </button>
+                      <div class="relative inline-block" data-user-menu>
+                        <button
+                          type="button"
+                          (click)="openMenuUserId() === user.id ? openMenuUserId.set(null) : openMenuUserId.set(user.id)"
+                          class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                          title="More actions"
+                        >
+                          <lucide-icon name="more-vertical" [size]="16" aria-hidden="true"></lucide-icon>
+                        </button>
+
+                        @if (openMenuUserId() === user.id) {
+                          <div class="absolute right-0 mt-1 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-border-subtle z-10">
+                            <!-- Edit User Option -->
+                            <button
+                              type="button"
+                              (click)="openEditUserModal(user); openMenuUserId.set(null)"
+                              [disabled]="user.id === currentUserId()"
+                              class="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed first:rounded-t-lg transition-colors flex items-center gap-2"
+                            >
+                              <lucide-icon name="pencil" [size]="14" aria-hidden="true" class="text-slate-400"></lucide-icon>
+                              Edit User
+                            </button>
+
+                            <!-- Verify Email Option -->
+                            @if (!user.emailVerified) {
+                              <button
+                                type="button"
+                                (click)="verifyUser(user.id); openMenuUserId.set(null)"
+                                [disabled]="isVerifyingUserId() === user.id"
+                                class="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                              >
+                                <lucide-icon name="shield-check" [size]="14" aria-hidden="true" class="text-emerald-500"></lucide-icon>
+                                {{ isVerifyingUserId() === user.id ? 'Verifying...' : 'Verify Email' }}
+                              </button>
+                            }
+
+                            <!-- Delete User Option -->
+                            <button
+                              type="button"
+                              (click)="confirmDelete(user); openMenuUserId.set(null)"
+                              [disabled]="user.id === currentUserId()"
+                              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 disabled:opacity-50 disabled:cursor-not-allowed last:rounded-b-lg transition-colors flex items-center gap-2"
+                            >
+                              <lucide-icon name="trash-2" [size]="14" aria-hidden="true" class="text-red-500"></lucide-icon>
+                              Delete User
+                            </button>
+                          </div>
                         }
                       </div>
                     </td>
@@ -290,6 +310,66 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
         </div>
       </div>
     }
+
+    <!-- Edit User Modal -->
+    @if (showEditModal()) {
+      <div
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+        (click)="closeEditModal()"
+      >
+        <div
+          class="bg-white dark:bg-slate-800 rounded-card shadow-xl max-w-md w-full p-6"
+          (click)="$event.stopPropagation()"
+        >
+          <h2 class="text-xl font-bold text-text-primary mb-4">Edit User</h2>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-text-primary mb-1">
+                Name
+              </label>
+              <input
+                type="text"
+                [(ngModel)]="editingName"
+                class="w-full px-3 h-10 rounded-xl border border-border-subtle bg-white dark:bg-slate-800 text-sm text-text-primary"
+                placeholder="User name"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-text-primary mb-1">
+                Role
+              </label>
+              <select
+                [(ngModel)]="editingRole"
+                class="w-full px-3 h-10 rounded-xl border border-border-subtle bg-white dark:bg-slate-800 text-sm text-text-primary"
+              >
+                <option [value]="UserRole.VIEWER">Viewer</option>
+                <option [value]="UserRole.OWNER">Owner</option>
+                <option [value]="UserRole.ADMIN">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            <button
+              type="button"
+              (click)="closeEditModal()"
+              class="flex-1 px-4 h-10 rounded-xl border border-border-subtle text-sm font-semibold text-text-primary hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              (click)="saveUserChanges()"
+              [disabled]="isSavingRole()"
+              class="flex-1 px-4 h-10 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            >
+              {{ isSavingRole() ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   `,
 })
 export class UserManagementPageComponent implements OnInit {
@@ -304,13 +384,20 @@ export class UserManagementPageComponent implements OnInit {
 
   showAddUserModal = signal(false);
   showDeleteModal = signal(false);
+  showEditModal = signal(false);
   editingUserId = signal<string | null>(null);
   editingRole = signal<UserRole>(UserRole.VIEWER);
+  editingName = signal<string>('');
   userToDelete = signal<OrgUser | null>(null);
+  openMenuUserId = signal<string | null>(null);
+  editingNameUserId = signal<string | null>(null);
+  editingNameValue = signal<string>('');
 
   isAddingUser = signal(false);
   isSavingRole = signal(false);
+  isSavingName = signal(false);
   isDeleting = signal(false);
+  isVerifyingUserId = signal<string | null>(null);
   addUserError = signal<string | null>(null);
   deleteError = signal<string | null>(null);
 
@@ -322,6 +409,14 @@ export class UserManagementPageComponent implements OnInit {
 
   ngOnInit() {
     this.userMgmtService.loadUsers().subscribe();
+    
+    // Close dropdown menu when clicking outside
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-user-menu]')) {
+        this.openMenuUserId.set(null);
+      }
+    });
   }
 
   closeAddUserModal() {
@@ -378,6 +473,54 @@ export class UserManagementPageComponent implements OnInit {
     });
   }
 
+  openEditUserModal(user: OrgUser) {
+    this.editingUserId.set(user.id);
+    this.editingName.set(user.name || '');
+    this.editingRole.set(user.role);
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+    this.editingUserId.set(null);
+    this.editingName.set('');
+    this.editingRole.set(UserRole.VIEWER);
+  }
+
+  saveUserChanges() {
+    const userId = this.editingUserId();
+    if (!userId) return;
+
+    const name = this.editingName().trim();
+    if (!name) {
+      alert('Name cannot be empty');
+      return;
+    }
+
+    this.isSavingRole.set(true);
+
+    // Save name and role together
+    this.userMgmtService.updateUserName(userId, name).subscribe({
+      next: () => {
+        // Then update role
+        this.userMgmtService.updateUserRole(userId, this.editingRole()).subscribe({
+          next: () => {
+            this.isSavingRole.set(false);
+            this.closeEditModal();
+          },
+          error: (err) => {
+            alert(err.error?.message || 'Failed to update role');
+            this.isSavingRole.set(false);
+          },
+        });
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Failed to update name');
+        this.isSavingRole.set(false);
+      },
+    });
+  }
+
   confirmDelete(user: OrgUser) {
     this.userToDelete.set(user);
     this.showDeleteModal.set(true);
@@ -409,6 +552,19 @@ export class UserManagementPageComponent implements OnInit {
     });
   }
 
+  verifyUser(userId: string) {
+    this.isVerifyingUserId.set(userId);
+    this.userMgmtService.setUserVerification(userId, true).subscribe({
+      next: () => {
+        this.isVerifyingUserId.set(null);
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Failed to verify user');
+        this.isVerifyingUserId.set(null);
+      },
+    });
+  }
+
   getRoleBadgeClass(role: UserRole): string {
     switch (role) {
       case UserRole.ADMIN:
@@ -420,5 +576,11 @@ export class UserManagementPageComponent implements OnInit {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  getVerificationBadgeClass(verified: boolean): string {
+    return verified
+      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+      : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
   }
 }

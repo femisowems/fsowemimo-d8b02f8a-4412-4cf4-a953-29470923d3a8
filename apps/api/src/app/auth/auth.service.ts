@@ -19,6 +19,10 @@ export class AuthService {
   async validateSupabaseUser(payload: any): Promise<any> {
     const { sub: supabaseUserId, email, user_metadata } = payload;
     const role = user_metadata?.role || UserRole.VIEWER;
+    const confirmedAt = payload?.email_confirmed_at || payload?.confirmed_at;
+    const isEmailVerified = Boolean(
+      confirmedAt || user_metadata?.email_verified,
+    );
 
     let user = await this.usersRepository.findOne({
       where: { supabaseUserId },
@@ -30,6 +34,10 @@ export class AuthService {
       if (user) {
         // Link existing user to supabase
         user.supabaseUserId = supabaseUserId;
+        if (isEmailVerified) {
+          user.emailVerified = true;
+          user.verifiedAt = confirmedAt ? new Date(confirmedAt) : user.verifiedAt;
+        }
         // Optional: Update role if we want to trust the metadata on link,
         // but usually we keep existing role. Let's keep existing role for security on link.
         await this.usersRepository.save(user);
@@ -50,9 +58,16 @@ export class AuthService {
           email,
           role: role as UserRole, // Use the role from metadata
           organizationId: defaultOrg.id,
+          emailVerified: isEmailVerified,
+          verifiedAt: confirmedAt ? new Date(confirmedAt) : null,
         });
         await this.usersRepository.save(user);
       }
+    } else if (isEmailVerified && !user.emailVerified) {
+      // Keep local verification state synced if the user confirms later in Supabase.
+      user.emailVerified = true;
+      user.verifiedAt = confirmedAt ? new Date(confirmedAt) : new Date();
+      await this.usersRepository.save(user);
     }
 
     return user;

@@ -71,6 +71,12 @@ export class User {
   role!: UserRole;
 
   @Column({ type: 'boolean', default: false })
+  emailVerified!: boolean;
+
+  @Column({ type: 'datetime', nullable: true })
+  verifiedAt!: Date | null;
+
+  @Column({ type: 'boolean', default: false })
   mfaEnabled!: boolean;
 
   @Column({ type: 'integer', default: 30 })

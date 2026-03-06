@@ -102,6 +102,53 @@ export class UsersController {
     return updated;
   }
 
+  @Patch(':id/name')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async updateUserName(
+    @Req() req: any,
+    @Param('id') userId: string,
+    @Body() body: { name: string },
+  ) {
+    const updated = await this.usersService.updateUserName(
+      req.user,
+      userId,
+      body.name,
+    );
+    this.eventEmitter.emit('audit.log', {
+      userId: req.user.id,
+      action: ActionType.UPDATE,
+      resourceType: 'User',
+      resourceId: userId,
+    });
+    return updated;
+  }
+
+  @Patch(':id/verify')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async setUserVerification(
+    @Req() req: any,
+    @Param('id') userId: string,
+    @Body() body: { verified?: boolean },
+  ) {
+    const verified = body?.verified ?? true;
+    const updated = await this.usersService.setUserVerification(
+      req.user,
+      userId,
+      verified,
+    );
+
+    this.eventEmitter.emit('audit.log', {
+      userId: req.user.id,
+      action: ActionType.UPDATE,
+      resourceType: 'UserVerification',
+      resourceId: userId,
+    });
+
+    return updated;
+  }
+
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
