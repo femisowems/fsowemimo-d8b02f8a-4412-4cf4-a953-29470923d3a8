@@ -12,7 +12,7 @@ import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="w-[360px] flex flex-col h-full rounded-2xl p-4 border shadow-sm shrink-0 snap-center"
+      class="w-[360px] flex flex-col h-[580px] rounded-2xl p-4 border shadow-sm shrink-0 snap-center"
       [ngClass]="containerClass"
     >
       <div class="flex items-center justify-between mb-4 px-1">
@@ -34,7 +34,7 @@ import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953
         cdkDropList
         [cdkDropListData]="tasks"
         (cdkDropListDropped)="onDrop($event)"
-        class="flex-1 space-y-3 overflow-y-auto min-h-[500px] pr-2"
+        class="flex-1 min-h-0 space-y-3 overflow-y-auto pr-2"
       >
         @for (task of tasks; track task.id) {
           <app-task-card

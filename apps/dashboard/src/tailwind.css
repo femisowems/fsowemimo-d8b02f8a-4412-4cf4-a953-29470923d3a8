@@ -514,17 +514,20 @@
   .h-12 {
     height: calc(var(--spacing) * 12);
   }
+  .h-\[580px\] {
+    height: 580px;
+  }
   .h-full {
     height: 100%;
   }
   .h-screen {
     height: 100vh;
   }
+  .min-h-0 {
+    min-height: calc(var(--spacing) * 0);
+  }
   .min-h-\[400px\] {
     min-height: 400px;
-  }
-  .min-h-\[500px\] {
-    min-height: 500px;
   }
   .min-h-screen {
     min-height: 100vh;
