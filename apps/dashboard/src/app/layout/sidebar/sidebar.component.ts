@@ -19,15 +19,22 @@ import { LucideAngularModule } from 'lucide-angular';
       <div
         class="p-grid-lg border-b border-border-subtle flex items-center justify-between"
       >
-        <div>
-          <h1 class="text-h4 font-bold text-indigo-600 leading-tight">
-            Secure Task Management
-          </h1>
-          <p
-            class="text-caption text-text-secondary mt-1 uppercase tracking-wider font-semibold"
-          >
-            {{ role() }}
-          </p>
+        <div class="flex items-center gap-4">
+          <div class="relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-magenta-500 to-orange-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <img src="logo.png" alt="Secure Task Management" class="relative w-14 h-14 rounded-xl shadow-xl border border-white/10 bg-white object-contain p-1">
+          </div>
+          <div>
+            <h1 class="text-h4 font-extrabold text-text-primary leading-none tracking-tight">
+              Secure Task
+              <span class="block text-[10px] font-bold text-indigo-500 tracking-[0.2em] uppercase mt-1 opacity-70">Management</span>
+            </h1>
+            <p
+              class="text-[10px] text-text-secondary uppercase tracking-widest font-bold opacity-60 mt-1"
+            >
+              {{ role() }}
+            </p>
+          </div>
         </div>
         <button
           [class.lg:hidden]="true"
