@@ -93,7 +93,14 @@ export class UsersService {
   }
 
   private async syncOrganizationUsersFromSupabase(organizationId: string) {
-    const supabase = this.ensureSupabaseAdminClient();
+    if (!this.supabaseAdminClient) {
+      console.warn(
+        'Supabase admin client is not configured. Skipping user synchronization.',
+      );
+      return;
+    }
+
+    const supabase = this.supabaseAdminClient;
 
     // Pull a broad page and sync org users into local DB so unverified signups appear.
     const { data, error } = await supabase.auth.admin.listUsers({
@@ -102,9 +109,8 @@ export class UsersService {
     });
 
     if (error) {
-      throw new InternalServerErrorException(
-        `Failed to list Supabase users: ${error.message}`,
-      );
+      console.error(`Failed to list Supabase users: ${error.message}`);
+      return; // Soft fail on sync error
     }
 
     const orgUsers = (data?.users || []).filter((u) => {
