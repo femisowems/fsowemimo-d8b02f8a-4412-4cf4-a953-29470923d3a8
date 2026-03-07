@@ -121,7 +121,7 @@ describe('TasksService', () => {
       const result = await service.findAll(viewerUser);
 
       expect(mockTaskRepo.find).toHaveBeenCalledWith({
-        where: { organizationId: 'org-1' },
+        where: { organizationId: 'org-1', createdBy: 'user-1' },
       });
       expect(result).toEqual([mockTask]);
     });

@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -8,6 +11,10 @@ describe('UsersController', () => {
 
   const mockUsersService = {
     updateUser: jest.fn(),
+  };
+
+  const mockEventEmitter = {
+    emit: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -18,8 +25,17 @@ describe('UsersController', () => {
           provide: UsersService,
           useValue: mockUsersService,
         },
+        {
+          provide: EventEmitter2,
+          useValue: mockEventEmitter,
+        },
       ],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard('supabase-jwt'))
+      .useValue({ canActivate: () => true })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<UsersController>(UsersController);
     service = module.get(UsersService);
@@ -30,14 +46,17 @@ describe('UsersController', () => {
   });
 
   it('should update a specific user', async () => {
-    const req = { params: { id: 'user-1' } };
+    const req = { 
+      user: { id: 'user-1', role: 'Owner' },
+      params: { id: 'user-1' } 
+    };
     const body = { name: 'Test User' };
     mockUsersService.updateUser.mockResolvedValue({
       id: 'user-1',
       ...body,
     } as any);
 
-    const result = await controller.updateUser(req, body);
+    const result = await controller.updateUser(req, 'user-1', body);
 
     expect(service.updateUser).toHaveBeenCalledWith('user-1', body);
     expect(result).toEqual({ id: 'user-1', name: 'Test User' });
