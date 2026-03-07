@@ -39,7 +39,7 @@ import { LucideAngularModule } from 'lucide-angular';
         </div>
         <div class="rounded-xl border border-border-subtle bg-surface-glass p-3">
           <p class="text-[11px] uppercase tracking-wider text-text-secondary">Update</p>
-          <p class="text-xl font-bold text-blue-700">{{ getActionCount('update') }}</p>
+          <p class="text-xl font-bold text-brand-primary">{{ getActionCount('update') }}</p>
         </div>
         <div class="rounded-xl border border-border-subtle bg-surface-glass p-3">
           <p class="text-[11px] uppercase tracking-wider text-text-secondary">Delete</p>
@@ -99,7 +99,7 @@ import { LucideAngularModule } from 'lucide-angular';
         <div class="text-center py-20 text-text-secondary space-y-3">
           <div class="inline-flex items-center gap-2">
             <span
-              class="inline-block h-4 w-4 rounded-full border-2 border-slate-300 border-t-indigo-500 animate-spin"
+              class="inline-block h-4 w-4 rounded-full border-2 border-slate-300 border-t-brand-primary animate-spin"
               aria-hidden="true"
             ></span>
             Loading audit logs...
@@ -438,7 +438,7 @@ export class AuditLogPageComponent implements OnInit {
       case 'create':
         return 'bg-green-50 text-green-700';
       case 'update':
-        return 'bg-blue-50 text-blue-700';
+        return 'bg-brand-primary/10 text-brand-primary';
       case 'delete':
         return 'bg-red-50 text-red-700';
       default:

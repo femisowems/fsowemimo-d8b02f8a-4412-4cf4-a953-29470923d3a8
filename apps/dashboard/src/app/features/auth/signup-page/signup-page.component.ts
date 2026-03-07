@@ -44,7 +44,7 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models
                 type="email"
                 autocomplete="email"
                 required
-                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary text-sm transition-all"
                 placeholder="name@example.com"
                 [attr.aria-invalid]="
                   signupForm.get('email')?.invalid &&
@@ -63,7 +63,7 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models
                 type="password"
                 autocomplete="new-password"
                 required
-                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                class="w-full h-11 px-grid-md rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary text-sm transition-all"
                 placeholder="••••••••"
                 [attr.aria-invalid]="
                   signupForm.get('password')?.invalid &&
@@ -110,7 +110,7 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models
             <button
               type="submit"
               [disabled]="isLoading() || success()"
-              class="w-full h-11 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full h-11 rounded-lg bg-brand-gradient text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-brand-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ isLoading() ? 'Creating account...' : 'Create Account' }}
             </button>
@@ -119,7 +119,7 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models
               Already have an account?
               <a
                 routerLink="/login"
-                class="text-indigo-600 hover:underline font-medium transition-colors"
+                class="text-brand-primary hover:underline font-bold transition-colors"
               >
                 Sign in
               </a>

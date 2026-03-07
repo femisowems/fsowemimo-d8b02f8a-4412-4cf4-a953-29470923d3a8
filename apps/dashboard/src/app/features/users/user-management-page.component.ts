@@ -23,7 +23,7 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
         <button
           type="button"
           (click)="showAddUserModal.set(true)"
-          class="inline-flex items-center gap-2 px-4 h-10 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors"
+          class="inline-flex items-center gap-2 px-6 h-11 rounded-xl bg-brand-gradient text-white text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-brand-primary/20 active:scale-95"
         >
           <lucide-icon name="user-plus" [size]="18" aria-hidden="true"></lucide-icon>
           Add User
@@ -81,10 +81,10 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
                   <tr class="hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors">
                     <td class="px-grid-lg py-grid-md">
                       <div>
-                        <div class="text-body-sm font-medium text-text-primary">
+                        <div class="text-body-sm font-medium text-text-primary flex items-center gap-2">
                           {{ user.name || 'Unnamed User' }}
                           @if (user.id === currentUserId()) {
-                            <span class="ml-2 text-xs text-indigo-600 font-semibold">(You)</span>
+                            <span class="px-2 py-0.5 text-[10px] bg-brand-primary/10 text-brand-primary font-bold rounded-lg tracking-wide uppercase">You</span>
                           }
                         </div>
                         <div class="text-xs text-text-secondary">{{ user.email }}</div>
@@ -131,55 +131,47 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
                     <td class="px-grid-lg py-grid-md text-body-sm text-text-secondary">
                       {{ user.createdAt | date: 'short' }}
                     </td>
-                    <td class="px-grid-lg py-grid-md text-right overflow-visible">
-                      <div class="relative inline-block" data-user-menu>
+                    <td class="px-grid-lg py-grid-md text-right">
+                      <div class="flex items-center justify-end gap-1">
+                        <!-- Edit Action -->
                         <button
                           type="button"
-                          (click)="openMenuUserId() === user.id ? openMenuUserId.set(null) : openMenuUserId.set(user.id)"
-                          class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                          title="More actions"
+                          (click)="openEditUserModal(user)"
+                          [disabled]="user.id === currentUserId()"
+                          class="p-2 text-slate-400 hover:text-brand-primary hover:bg-brand-primary/10 rounded-xl transition-all disabled:opacity-20 disabled:cursor-not-allowed group"
+                          title="Edit User"
                         >
-                          <lucide-icon name="more-vertical" [size]="16" aria-hidden="true"></lucide-icon>
+                          <lucide-icon name="pencil" [size]="16" class="group-hover:scale-110 transition-transform"></lucide-icon>
                         </button>
 
-                        @if (openMenuUserId() === user.id) {
-                          <div class="absolute right-0 mt-1 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-border-subtle z-[100]">
-                            <!-- Edit User Option -->
-                            <button
-                              type="button"
-                              (click)="openEditUserModal(user); openMenuUserId.set(null)"
-                              [disabled]="user.id === currentUserId()"
-                              class="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed first:rounded-t-lg transition-colors flex items-center gap-2"
-                            >
-                              <lucide-icon name="pencil" [size]="14" aria-hidden="true" class="text-slate-400"></lucide-icon>
-                              Edit User
-                            </button>
-
-                            <!-- Verify Email Option -->
-                            @if (!user.emailVerified) {
-                              <button
-                                type="button"
-                                (click)="verifyUser(user.id); openMenuUserId.set(null)"
-                                [disabled]="isVerifyingUserId() === user.id"
-                                class="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-                              >
-                                <lucide-icon name="shield-check" [size]="14" aria-hidden="true" class="text-emerald-500"></lucide-icon>
-                                {{ isVerifyingUserId() === user.id ? 'Verifying...' : 'Verify Email' }}
-                              </button>
-                            }
-
-                            <!-- Delete User Option -->
-                            <button
-                              type="button"
-                              (click)="confirmDelete(user); openMenuUserId.set(null)"
-                              [disabled]="user.id === currentUserId()"
-                              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 disabled:opacity-50 disabled:cursor-not-allowed last:rounded-b-lg transition-colors flex items-center gap-2"
-                            >
-                              <lucide-icon name="trash-2" [size]="14" aria-hidden="true" class="text-red-500"></lucide-icon>
-                              Delete User
-                            </button>
-                          </div>
+                        <!-- Verify Action -->
+                        @if (!user.emailVerified) {
+                          <button
+                            type="button"
+                            (click)="verifyUser(user.id)"
+                            [disabled]="isVerifyingUserId() === user.id"
+                            class="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all disabled:opacity-20 group"
+                            [title]="isVerifyingUserId() === user.id ? 'Verifying...' : 'Verify Email'"
+                          >
+                            <lucide-icon 
+                              [name]="isVerifyingUserId() === user.id ? 'loader-2' : 'shield-check'" 
+                              [size]="16" 
+                              [class.animate-spin]="isVerifyingUserId() === user.id"
+                              class="group-hover:scale-110 transition-transform"
+                            ></lucide-icon>
+                          </button>
                         }
+
+                        <!-- Delete Action -->
+                        <button
+                          type="button"
+                          (click)="confirmDelete(user)"
+                          [disabled]="user.id === currentUserId()"
+                          class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all disabled:opacity-20 disabled:cursor-not-allowed group"
+                          title="Delete User"
+                        >
+                          <lucide-icon name="trash-2" [size]="16" class="group-hover:scale-110 transition-transform"></lucide-icon>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -262,7 +254,7 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
                 <button
                   type="submit"
                   [disabled]="addUserForm.invalid || isAddingUser()"
-                  class="flex-1 px-4 h-10 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="flex-1 px-4 h-11 rounded-xl bg-brand-gradient text-white text-sm font-bold shadow-lg shadow-brand-primary/20 hover:opacity-90 transition-all disabled:opacity-50 active:scale-95"
                 >
                   {{ isAddingUser() ? 'Adding...' : 'Add User' }}
                 </button>
@@ -373,7 +365,7 @@ import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state
               type="button"
               (click)="saveUserChanges()"
               [disabled]="isSavingRole()"
-              class="flex-1 px-4 h-10 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              class="flex-1 px-4 h-11 rounded-xl bg-brand-gradient text-white text-sm font-bold shadow-lg shadow-brand-primary/20 hover:opacity-90 transition-all disabled:opacity-50 active:scale-95"
             >
               {{ isSavingRole() ? 'Saving...' : 'Save Changes' }}
             </button>
@@ -400,7 +392,6 @@ export class UserManagementPageComponent implements OnInit {
   editingRole = signal<UserRole>(UserRole.VIEWER);
   editingName = signal<string>('');
   userToDelete = signal<OrgUser | null>(null);
-  openMenuUserId = signal<string | null>(null);
   editingNameUserId = signal<string | null>(null);
   editingNameValue = signal<string>('');
 
@@ -420,14 +411,6 @@ export class UserManagementPageComponent implements OnInit {
 
   ngOnInit() {
     this.userMgmtService.loadUsers().subscribe();
-    
-    // Close dropdown menu when clicking outside
-    document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('[data-user-menu]')) {
-        this.openMenuUserId.set(null);
-      }
-    });
   }
 
   closeAddUserModal() {

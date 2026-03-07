@@ -32,7 +32,7 @@ import {
             id="title"
             formControlName="title"
             type="text"
-            class="block w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-slate-900 placeholder:text-slate-400"
+            class="appearance-none block w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all text-slate-900"
             placeholder="e.g. Migration to v2"
           />
         </div>
@@ -63,7 +63,7 @@ import {
               <select
                 id="category"
                 formControlName="category"
-                class="appearance-none block w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all text-slate-900"
+                class="appearance-none block w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all text-slate-900"
               >
                 @for (cat of categories; track cat) {
                   <option [value]="cat">{{ getCategoryLabel(cat) }}</option>
@@ -91,7 +91,7 @@ import {
               <select
                 id="status"
                 formControlName="status"
-                class="appearance-none block w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all text-slate-900"
+                class="appearance-none block w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all text-slate-900"
               >
                 @for (status of statuses; track status) {
                   <option [value]="status">{{ getStatusLabel(status) }}</option>
@@ -150,7 +150,7 @@ import {
         <button
           type="submit"
           [disabled]="taskForm.invalid"
-          class="px-6 h-11 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 shadow-md shadow-indigo-200 transition-all active:scale-95"
+          class="px-8 h-11 text-sm font-bold text-white bg-brand-gradient rounded-xl hover:opacity-90 disabled:opacity-50 shadow-lg shadow-brand-primary/20 transition-all active:scale-95"
         >
           {{ isEditing ? 'Update Task' : 'Create Task' }}
         </button>
