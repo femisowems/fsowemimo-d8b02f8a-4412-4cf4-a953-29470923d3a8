@@ -59,7 +59,7 @@
   --brand-secondary: #ff00ff; /* Magenta */
   --brand-accent: #ff8c00; /* Orange */
 
-  --brand-gradient: linear-gradient(135deg, #ff00ff, #7000ff, #ff8c00);
+  --background-image-brand-gradient: linear-gradient(135deg, #ff00ff, #7000ff, #ff8c00);
   --brand-gradient-soft: linear-gradient(
     135deg,
     rgba(255, 0, 255, 0.1),
@@ -70,7 +70,6 @@
   --color-brand-primary: var(--brand-primary);
   --color-brand-secondary: var(--brand-secondary);
   --color-brand-accent: var(--brand-accent);
-  --color-brand-gradient: var(--brand-gradient);
 
   --color-surface: var(--surface);
   --color-surface-glass: var(--surface-glass);
