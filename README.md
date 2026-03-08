@@ -1,8 +1,8 @@
-# Secure Task Management App
+# Secure Task Management 🛡️
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+<a alt="Secure Task Management Logo" href="#" target="_blank" rel="noreferrer"><img src="apps/dashboard/public/logo.png" width="45"></a>
 
-A modern, secure, and scalable task management application built with an Nx monorepo. This project features a robust Angular frontend styled with Tailwind CSS v4 and a NestJS backend API using TypeORM and SQLite/Postgres.
+A modern, enterprise-ready task management platform built with high performance, security, and visual excellence in mind. This Nx monorepo features a cutting-edge Angular frontend styled with Tailwind CSS v4 and a resilient NestJS backend.
 
 ## 🎥 Watch the Walkthrough/Demo Video
 
@@ -35,12 +35,14 @@ This implementation satisfies all core requirements:
 - **Organization Support:** Manage tasks within different organization contexts.
 - **Role-Based Access Control (RBAC):** Granular permission management.
 
-### 📈 Bonus Features Implemented
+### 📈 Bonus Features & UX Refinements
 
-- **Dark Mode Toggle:** Fully supported theme switching.
-- **Keyboard Shortcuts:** Productivity-focused shortcuts (Press `?` to view).
-- **Task Analytics:** Visual completion bar chart.
-- **Audit Log:** Comprehensive tracking of user actions.
+- **The Secure Lifecycle Branding**: Vibrant Magenta-Violet-Orange palette with glassmorphic UI elements.
+- **Productive Management**: Replaced slow dropdowns with direct inline icons for user actions (Edit, Verify, Delete).
+- **Dark Mode Toggle**: Native support for sleek dark-themed workspaces.
+- **Keyboard Shortcuts**: Power-user shortcuts for instant navigation (Press `?` to view).
+- **Global Accessibility**: Added Escape key support to instantly dismiss modals and guides.
+- **Task Analytics**: Real-time visual progress tracking and audit logging.
 
 ![Secure Task Management Dashboard](docs/images/dashboard-preview.png)
 
@@ -73,9 +75,22 @@ To align with the "champion of best practices for well-tested code" standard, ba
 The project's GitHub actions CI/CD pipeline was entirely redesigned.
 
 - **Nx Affected Tooling:** The CI pipeline now intelligently isolates builds, tests, and linting based purely on the `git` dependency graph calculation by leveraging `nrwl/nx-set-shas@v4` and `npx nx affected`.
-- **Performance:** This ensures that checks run extremely quickly, executing in parallel (`--parallel=3`), modeling an enterprise-ready `Agile/Scrum` delivery environment capable of handling high developer throughput without slow merge jobs.
+- **Performance:** This ensures that checks run extremely quickly, executing in parallel (`--parallel=3`), modeling an enterprise-ready `Agile/Scrum` delivery environment capable of handling high developer throughput.
 
-### 🚀 Scalability: Event-Driven Architecture (New)
+### 🎨 Branding: High-End Visual Identity (New)
+
+The platform has been completely rebranded with **"The Secure Lifecycle"** concept.
+
+- **Dynamic Gradients**: Leverages Tailwind 4's powerful configuration for custom `brand-gradient` utilities.
+- **Cohesive UI**: Unified color system across Audit Logs, Auth flows, and Task Management.
+
+### 🛡️ Resilience: Fault-Tolerant Architecture (New)
+
+The User Management system has been hardened to survive configuration gaps.
+
+- **Graceful Degradation**: The API now detects missing Supabase admin keys and automatically falls back to local data synchronization, ensuring the dashboard stays operational in any environment.
+
+### Scalability: Event-Driven Architecture (New)
 
 To support massive scale (a critical requirement for Jobber's ecosystem), the Audit Logging system has been refactored to an **Event-Driven Architecture** using `EventEmitter2`.
 
