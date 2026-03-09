@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TeamsService } from './teams.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Team, User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data';
+import { Team, User } from '@secure-task-management/data';
 
 describe('TeamsService', () => {
   let service: TeamsService;

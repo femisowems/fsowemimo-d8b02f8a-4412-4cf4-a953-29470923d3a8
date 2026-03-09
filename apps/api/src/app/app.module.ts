@@ -13,7 +13,7 @@ import {
   AuditLog,
   Permission,
   Team,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
+} from '@secure-task-management/data/entities';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';

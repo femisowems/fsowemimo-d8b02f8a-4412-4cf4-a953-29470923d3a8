@@ -12,12 +12,12 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
-import { Roles } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.decorator';
+import { RolesGuard } from '@secure-task-management/auth/roles.guard';
+import { Roles } from '@secure-task-management/auth/roles.decorator';
 import { UsersService } from './users.service';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { UserRole } from '@secure-task-management/data/enums';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ActionType } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { ActionType } from '@secure-task-management/data/enums';
 
 @Controller('users')
 @UseGuards(AuthGuard('supabase-jwt'))
@@ -55,7 +55,7 @@ export class UsersController {
 
   @Get()
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
   async listUsers(@Req() req: any) {
     this.eventEmitter.emit('audit.log', {
       userId: req.user.id,

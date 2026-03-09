@@ -2,8 +2,8 @@ import { Component, inject, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Important for *ngIf
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { ThemeService, KeyboardShortcutsService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { UiStateService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
+import { ThemeService, KeyboardShortcutsService } from '@secure-task-management/services';
+import { UiStateService } from '@secure-task-management/state';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

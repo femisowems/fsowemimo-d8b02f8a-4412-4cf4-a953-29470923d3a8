@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
-import { AuditService, APP_CONFIG } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { AuthStore } from '@secure-task-management/state';
+import { AuditService, APP_CONFIG } from '@secure-task-management/services';
 import {
   UserSettings,
   SettingsProfile,

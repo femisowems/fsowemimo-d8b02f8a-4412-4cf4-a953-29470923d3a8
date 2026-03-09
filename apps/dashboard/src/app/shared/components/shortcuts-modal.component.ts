@@ -1,6 +1,6 @@
 import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { KeyboardShortcutsService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { KeyboardShortcutsService } from '@secure-task-management/services';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

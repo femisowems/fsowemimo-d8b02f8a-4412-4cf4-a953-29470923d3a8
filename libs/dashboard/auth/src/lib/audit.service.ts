@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ActionType } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/enums';
+import { ActionType } from '@secure-task-management/dashboard-data/enums';
 
 @Injectable()
 export class AuditLogService {

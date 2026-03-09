@@ -1,9 +1,9 @@
 import { Component, inject, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthStore, UiStateService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
-import { ThemeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { AuthStore, UiStateService } from '@secure-task-management/state';
+import { ThemeService } from '@secure-task-management/services';
+import { UserRole } from '@secure-task-management/models';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

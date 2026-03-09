@@ -6,4 +6,4 @@ export * from './lib/theme.service';
 export * from './lib/settings.service';
 export * from './lib/keyboard-shortcuts.service';
 export * from './lib/user-management.service';
-export type { Theme } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+export type { Theme } from '@secure-task-management/models';

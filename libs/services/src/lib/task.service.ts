@@ -1,6 +1,6 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Task, TaskStatus, TaskCategory } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { Task, TaskStatus, TaskCategory } from '@secure-task-management/models';
 import { firstValueFrom } from 'rxjs';
 import { APP_CONFIG } from './tokens';
 

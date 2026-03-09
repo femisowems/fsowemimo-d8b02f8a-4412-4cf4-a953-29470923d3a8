@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { APP_CONFIG } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { APP_CONFIG } from '@secure-task-management/services';
 import { Observable } from 'rxjs';
-import { Team } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { Team } from '@secure-task-management/models';
 
 @Injectable({ providedIn: 'root' })
 export class TeamsService {

@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
-import { Roles } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.decorator';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { RolesGuard } from '@secure-task-management/auth/roles.guard';
+import { Roles } from '@secure-task-management/auth/roles.decorator';
+import { UserRole } from '@secure-task-management/data/enums';
 
 @Controller('teams')
 @UseGuards(JwtAuthGuard, RolesGuard)

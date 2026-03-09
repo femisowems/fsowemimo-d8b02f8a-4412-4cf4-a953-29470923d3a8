@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDe
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { ButtonComponent } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/shared-ui';
-import { TaskCategory, Team } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { ButtonComponent } from '@secure-task-management/shared-ui';
+import { TaskCategory, Team } from '@secure-task-management/models';
 
 @Component({
   selector: 'app-task-header',

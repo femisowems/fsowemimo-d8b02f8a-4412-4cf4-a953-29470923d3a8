@@ -15,46 +15,46 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth": [
+      "@secure-task-management/auth": [
         "libs/api/auth/src/lib/rbac.service.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/*": [
+      "@secure-task-management/auth/*": [
         "libs/api/auth/src/lib/*"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data": [
+      "@secure-task-management/data": [
         "libs/api/data/src/lib/entities.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/*": [
+      "@secure-task-management/data/*": [
         "libs/api/data/src/lib/*"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-auth": [
+      "@secure-task-management/dashboard-auth": [
         "libs/dashboard/auth/src/lib/rbac.service.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-auth/*": [
+      "@secure-task-management/dashboard-auth/*": [
         "libs/dashboard/auth/src/lib/*"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data": [
+      "@secure-task-management/dashboard-data": [
         "libs/dashboard/data/src/lib/entities.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/enums": [
+      "@secure-task-management/dashboard-data/enums": [
         "libs/dashboard/data/src/lib/enums.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-design-system": [
+      "@secure-task-management/dashboard-design-system": [
         "libs/dashboard/design-system/src/lib/tokens.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-design-system/*": [
+      "@secure-task-management/dashboard-design-system/*": [
         "libs/dashboard/design-system/src/lib/*"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/shared-ui": [
+      "@secure-task-management/shared-ui": [
         "libs/shared/ui/src/index.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models": [
+      "@secure-task-management/models": [
         "libs/models/src/index.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services": [
+      "@secure-task-management/services": [
         "libs/services/src/index.ts"
       ],
-      "@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state": [
+      "@secure-task-management/state": [
         "libs/state/src/index.ts"
       ]
     }

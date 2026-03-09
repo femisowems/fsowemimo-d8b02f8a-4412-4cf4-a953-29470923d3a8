@@ -9,12 +9,12 @@ import {
 } from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Assume this will be created or standard
-import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
-import { Roles } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.decorator'; // Need this too
+import { RolesGuard } from '@secure-task-management/auth/roles.guard';
+import { Roles } from '@secure-task-management/auth/roles.decorator'; // Need this too
 import {
   UserRole,
   ActionType,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+} from '@secure-task-management/data/enums';
 // Re-using existent guards from previous steps or creating new ones if needed.
 // Requirement says "JwtAuthGuard - protect ALL task and audit endpoints"
 

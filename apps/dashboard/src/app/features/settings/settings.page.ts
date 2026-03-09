@@ -7,8 +7,8 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { AuthStore } from '@secure-task-management/state';
+import { UserRole } from '@secure-task-management/models';
 import { SettingsService } from './settings.service';
 import {
   SettingsTab,
@@ -16,7 +16,7 @@ import {
   SettingsProfile,
   SettingsOrganization,
 } from './settings.model';
-import { ThemeService, Theme } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { ThemeService, Theme } from '@secure-task-management/services';
 import { TeamsTabComponent } from './teams-tab.component';
 
 @Component({

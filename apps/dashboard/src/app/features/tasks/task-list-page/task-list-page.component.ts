@@ -13,8 +13,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { LucideAngularModule } from 'lucide-angular';
-import { TaskService, KeyboardShortcutsService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { AuthStore, UiStateService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
+import { TaskService, KeyboardShortcutsService } from '@secure-task-management/services';
+import { AuthStore, UiStateService } from '@secure-task-management/state';
 import {
   UserRole,
   Task,
@@ -22,13 +22,13 @@ import {
   TaskCategory,
   TaskPriority,
   Team,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+} from '@secure-task-management/models';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { TaskAnalyticsComponent } from '../../analytics/task-analytics.component';
 import { ShortcutsModalComponent } from '../../../shared/components/shortcuts-modal.component';
 import { TaskHeaderComponent } from '../components/task-header.component';
 import { TaskColumnComponent } from '../components/task-column.component';
-import { CardComponent } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/shared-ui';
+import { CardComponent } from '@secure-task-management/shared-ui';
 import { TeamsService } from '../../settings/teams.service';
 // KeyboardShortcutsService moved above
 

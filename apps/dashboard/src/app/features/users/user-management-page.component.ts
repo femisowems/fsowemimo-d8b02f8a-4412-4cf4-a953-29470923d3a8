@@ -2,9 +2,9 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { UserManagementService, OrgUser } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
-import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
+import { UserManagementService, OrgUser } from '@secure-task-management/services';
+import { UserRole } from '@secure-task-management/models';
+import { AuthStore } from '@secure-task-management/state';
 
 @Component({
   selector: 'app-user-management',

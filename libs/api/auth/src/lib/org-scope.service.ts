@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import {
   User,
   Organization,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+} from '@secure-task-management/data/entities';
+import { UserRole } from '@secure-task-management/data/enums';
 
 @Injectable()
 export class OrgScopeService {

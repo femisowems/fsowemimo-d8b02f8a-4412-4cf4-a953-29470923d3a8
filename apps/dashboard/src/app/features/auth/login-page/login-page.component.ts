@@ -3,8 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
-import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
-import { SupabaseService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
+import { AuthStore } from '@secure-task-management/state';
+import { SupabaseService } from '@secure-task-management/services';
 
 @Component({
   selector: 'app-login-page',

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuditLog } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
-import { ActionType } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { AuditLog } from '@secure-task-management/data/entities';
+import { ActionType } from '@secure-task-management/data/enums';
 import { OnEvent } from '@nestjs/event-emitter';
 
 export class AuditLogEvent {

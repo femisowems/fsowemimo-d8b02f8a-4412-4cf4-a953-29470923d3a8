@@ -1,8 +1,8 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { SupabaseService, APP_CONFIG } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { SupabaseService, APP_CONFIG } from '@secure-task-management/services';
+import { User } from '@secure-task-management/models';
 import { firstValueFrom } from 'rxjs';
 import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 

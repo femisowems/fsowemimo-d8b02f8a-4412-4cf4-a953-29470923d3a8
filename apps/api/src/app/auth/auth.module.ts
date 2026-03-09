@@ -7,10 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   User,
   Organization,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
+} from '@secure-task-management/data/entities';
 import { AuthController } from './auth.controller';
-import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
-import { OrgScopeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/org-scope.service';
+import { RbacService } from '@secure-task-management/auth/rbac.service';
+import { OrgScopeService } from '@secure-task-management/auth/org-scope.service';
 
 @Module({
   imports: [

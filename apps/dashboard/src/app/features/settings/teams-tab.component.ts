@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { TeamsService } from './teams.service';
-import { UserManagementService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { Team } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { UserManagementService } from '@secure-task-management/services';
+import { Team, UserRole } from '@secure-task-management/models';
+import { AuthStore } from '@secure-task-management/state';
 
 @Component({
   selector: 'app-teams-tab',
@@ -116,6 +117,7 @@ import { Team } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
 export class TeamsTabComponent implements OnInit {
   private teamsService = inject(TeamsService);
   private userMgmtService = inject(UserManagementService);
+  private authStore = inject(AuthStore);
   private fb = inject(FormBuilder);
  
   teams = signal<Team[]>([]);
@@ -135,7 +137,12 @@ export class TeamsTabComponent implements OnInit {
 
   ngOnInit() {
     this.loadTeams();
-    this.userMgmtService.loadUsers().subscribe();
+    
+    // Only load users if user is Admin or Owner
+    const role = this.authStore.user()?.role;
+    if (role === UserRole.ADMIN || role === UserRole.OWNER) {
+      this.userMgmtService.loadUsers().subscribe();
+    }
   }
 
   loadTeams() {

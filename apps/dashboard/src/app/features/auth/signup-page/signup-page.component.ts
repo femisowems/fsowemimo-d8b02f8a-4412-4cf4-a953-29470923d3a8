@@ -2,9 +2,9 @@ import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
-import { SupabaseService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { AuthStore } from '@secure-task-management/state';
+import { SupabaseService } from '@secure-task-management/services';
+import { UserRole } from '@secure-task-management/models';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({

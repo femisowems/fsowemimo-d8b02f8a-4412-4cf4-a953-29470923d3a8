@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
-import { Task, TaskCategory, TaskPriority, TaskStatus } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
-import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/shared-ui';
+import { Task, TaskCategory, TaskPriority, TaskStatus } from '@secure-task-management/models';
+import { BadgeComponent, BadgeVariant } from '@secure-task-management/shared-ui';
 
 @Component({
   selector: 'app-task-card',

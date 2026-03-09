@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Task, TaskStatus } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { Task, TaskStatus } from '@secure-task-management/models';
 import { TaskCardComponent } from './task-card.component';
-import { BadgeComponent, BadgeVariant } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/shared-ui';
+import { BadgeComponent, BadgeVariant } from '@secure-task-management/shared-ui';
 
 @Component({
   selector: 'app-task-column',

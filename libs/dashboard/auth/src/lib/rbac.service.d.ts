@@ -1,8 +1,8 @@
 import {
   User,
   Task,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/entities';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/dashboard-data/enums';
+} from '@secure-task-management/dashboard-data/entities';
+import { UserRole } from '@secure-task-management/dashboard-data/enums';
 import { OrgScopeService } from './org-scope.service';
 export declare class RbacService {
   private readonly orgScopeService;

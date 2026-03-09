@@ -8,9 +8,9 @@ import { Repository } from 'typeorm';
 import {
   Team,
   User,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data';
+} from '@secure-task-management/data';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ActionType } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { ActionType } from '@secure-task-management/data/enums';
 
 @Injectable()
 export class TeamsService {

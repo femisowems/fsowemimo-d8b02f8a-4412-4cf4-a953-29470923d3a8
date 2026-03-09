@@ -1,8 +1,8 @@
 import { Component, Input, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Task, TaskStatus } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { Task, TaskStatus } from '@secure-task-management/models';
 import { LucideAngularModule } from 'lucide-angular';
-import { CardComponent } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/shared-ui';
+import { CardComponent } from '@secure-task-management/shared-ui';
 
 @Component({
   selector: 'app-task-analytics',

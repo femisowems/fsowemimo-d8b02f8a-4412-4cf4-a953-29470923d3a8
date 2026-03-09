@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
-import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+import { User } from '@secure-task-management/data/entities';
+import { UserRole } from '@secure-task-management/data/enums';
 import { createClient, type User as SupabaseUser } from '@supabase/supabase-js';
 
 @Injectable()

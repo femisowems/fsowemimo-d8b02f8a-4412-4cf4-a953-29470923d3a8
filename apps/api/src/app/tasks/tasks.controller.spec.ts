@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { Reflector } from '@nestjs/core';
-import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
+import { RbacService } from '@secure-task-management/auth/rbac.service';
 
 describe('TasksController', () => {
   let controller: TasksController;

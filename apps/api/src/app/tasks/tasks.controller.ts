@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // need to implement this file
-import { RolesGuard } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/roles.guard';
+import { RolesGuard } from '@secure-task-management/auth/roles.guard';
 
 @Controller('tasks')
 @UseGuards(JwtAuthGuard, RolesGuard)

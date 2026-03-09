@@ -5,14 +5,14 @@ import {
   Task,
   User,
   Team,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/entities';
-import { RbacService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/rbac.service';
-import { OrgScopeService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/auth/org-scope.service';
+} from '@secure-task-management/data/entities';
+import { RbacService } from '@secure-task-management/auth/rbac.service';
+import { OrgScopeService } from '@secure-task-management/auth/org-scope.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   ActionType,
   UserRole,
-} from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/data/enums';
+} from '@secure-task-management/data/enums';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 describe('TasksService', () => {
