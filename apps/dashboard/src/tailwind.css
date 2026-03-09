@@ -116,7 +116,6 @@
     --text-2xl--line-height: calc(2 / 1.5);
     --text-3xl: 1.875rem;
     --text-3xl--line-height: calc(2.25 / 1.875);
-    --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
@@ -974,6 +973,12 @@
   .border-brand-primary {
     border-color: var(--color-brand-primary);
   }
+  .border-brand-primary\/10 {
+    border-color: color-mix(in srgb, #7000ff 10%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-brand-primary) 10%, transparent);
+    }
+  }
   .border-gray-200 {
     border-color: var(--color-gray-200);
   }
@@ -1087,6 +1092,12 @@
   }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
+  }
+  .bg-brand-primary\/5 {
+    background-color: color-mix(in srgb, #7000ff 5%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-brand-primary) 5%, transparent);
+    }
   }
   .bg-brand-primary\/10 {
     background-color: color-mix(in srgb, #7000ff 10%, transparent);
@@ -1691,6 +1702,12 @@
   }
   .underline {
     text-decoration-line: underline;
+  }
+  .decoration-2 {
+    text-decoration-thickness: 2px;
+  }
+  .underline-offset-2 {
+    text-underline-offset: 2px;
   }
   .opacity-0 {
     opacity: 0%;
