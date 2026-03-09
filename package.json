@@ -13,7 +13,11 @@
     "test": "npx nx run-many -t test",
     "lint": "npx nx run-many -t lint",
     "clean": "npx nx reset && rm -rf dist .angular .nx",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "typeorm": "npx typeorm-ts-node-commonjs",
+    "migration:run": "npm run typeorm migration:run -- -d apps/api/src/db/data-source.ts",
+    "migration:generate": "npm run typeorm migration:generate -- -d apps/api/src/db/data-source.ts",
+    "db:seed": "npx ts-node apps/api/src/db/seed.ts"
   },
   "private": true,
   "devDependencies": {
