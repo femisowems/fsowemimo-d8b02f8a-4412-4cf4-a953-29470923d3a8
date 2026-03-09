@@ -2,13 +2,14 @@ import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
 import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
 import { SupabaseService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, LucideAngularModule],
   template: `
     <div
       class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4"
@@ -70,8 +71,9 @@ import { SupabaseService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8
         >
           @if (sessionMessage()) {
             <div
-              class="bg-amber-50 border border-amber-200 text-amber-800 text-xs py-grid-sm px-grid-md rounded-md text-center"
+              class="flex items-center gap-3 bg-brand-primary/5 border border-brand-primary/10 text-brand-primary text-xs font-semibold py-3 px-4 rounded-xl animate-in fade-in slide-in-from-top-2"
             >
+              <lucide-icon name="check-circle-2" [size]="16"></lucide-icon>
               {{ sessionMessage() }}
             </div>
           }
@@ -121,9 +123,10 @@ import { SupabaseService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8
 
           @if (error()) {
             <div
-              class="bg-red-50 border border-red-100 text-red-600 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1"
+              class="flex items-center gap-3 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold py-3 px-4 rounded-xl animate-in fade-in slide-in-from-top-2"
             >
-              {{ error() }}
+              <lucide-icon name="shield-alert" [size]="16"></lucide-icon>
+              <span>{{ error() }}</span>
             </div>
           }
 

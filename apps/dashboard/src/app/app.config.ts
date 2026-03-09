@@ -34,6 +34,8 @@ import {
   Loader2,
   Building2,
   ClipboardCheck,
+  ShieldAlert,
+  CheckCircle2,
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -84,6 +86,8 @@ export const appConfig: ApplicationConfig = {
         Loader2,
         Building2,
         ClipboardCheck,
+        ShieldAlert,
+        CheckCircle2,
       }),
     },
   ],

@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { AuthStore } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/state';
 import { SupabaseService } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/services';
 import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-signup-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, LucideAngularModule],
   template: `
     <div
       class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4"
@@ -91,18 +92,22 @@ import { UserRole } from '@fsowemimo-d8b02f8a-4412-4cf4-a953-29470923d3a8/models
 
           @if (error()) {
             <div
-              class="bg-red-50 border border-red-100 text-red-600 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1"
+              class="flex items-center gap-3 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold py-3 px-4 rounded-xl animate-in fade-in slide-in-from-top-2"
             >
-              {{ error() }}
+              <lucide-icon name="shield-alert" [size]="16"></lucide-icon>
+              <span>{{ error() }}</span>
             </div>
           }
 
           @if (success()) {
             <div
-              class="bg-green-50 border border-green-100 text-green-700 text-xs py-grid-sm px-grid-md rounded-md text-center animate-in fade-in slide-in-from-top-1"
+              class="flex items-center gap-3 bg-green-50 border border-green-100 text-green-700 text-xs font-semibold py-4 px-4 rounded-xl animate-in fade-in slide-in-from-top-2"
             >
-              Signup successful! Please
-              <a routerLink="/login" class="font-bold underline">sign in</a>.
+              <lucide-icon name="check-circle-2" [size]="20" class="text-green-600"></lucide-icon>
+              <div>
+                <p class="font-bold">Signup successful!</p>
+                <p class="mt-0.5">Please <a routerLink="/login" class="underline decoration-2 underline-offset-2">sign in</a> to continue.</p>
+              </div>
             </div>
           }
 
