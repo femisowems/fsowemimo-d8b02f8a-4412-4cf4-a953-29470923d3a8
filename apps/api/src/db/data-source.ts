@@ -6,7 +6,7 @@ import {
   Task,
   AuditLog,
   Permission,
-} from '../src/app/data/entities';
+} from '@secure-task-management/data';
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 

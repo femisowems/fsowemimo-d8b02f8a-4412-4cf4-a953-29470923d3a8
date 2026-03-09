@@ -7,8 +7,8 @@ import {
   Task,
   AuditLog,
   Permission,
-} from '../src/app/data/entities'; // Needs to handle the refactored path
-import { UserRole } from '../src/app/data/enums';
+} from '@secure-task-management/data';
+import { UserRole } from '@secure-task-management/data/enums';
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 
